@@ -3,14 +3,13 @@
 
 
 // Version
-const version = "0.03";
+const version = "0.04";
 // 13.03.2026
 
 
 // ToDo / Bugs / Ideen:
-// Gesamtsumme
-// Entwicklung Tag
-// Entwicklung Jahr (inkl. Nachkäufe)
+// Formatieren der Anzeigen (Geld rechtsbündig, Schriftgrößen, Schriftfarben)
+// Kursentwicklung Jahr in Prozent (inkl. Nachkäufe)
 
 
 // Debuglevel
@@ -34,17 +33,18 @@ const datumanteile = new Date("03/02/2026");
 // #6 - Timestamp Kursdaten
 // #7 - Startkurs des Tages (initialisiert, wird überschrieben)
 // #8 - ID Consorsbank
-// #9 - Anzahl Aktien Jahresanfang (händisch eingetragen, aktuell 01.01.2025)
-// #10 - Kurs Jahresanfang (händisch eingetragen, aktuell 01.01.2025)
+// #9 - Anzahl Aktien Jahresanfang (händisch eingetragen, Stand: 01.01.2025)
+// #10 - Kurs Jahresanfang (händisch eingetragen, Stand: 01.01.2025)
+// #11 - Historischer Gesamtwert (initialisiert, wird überschrieben)
 const anzahl = 7;
 const finanzdaten = [];
-finanzdaten[0] = ["ETF Core MSCI World","IE00B4L5Y983",0.00,500.084082,0.00,"","",0.00,"_109183133",500.084082,111.74];
-finanzdaten[1] = ["ETF MSCI World SRI","IE00BYX2JD69",0.00,3990.067096,0.00,"","",0.00,"_242889139",3792.520514,12.19];
-finanzdaten[2] = ["Aktie Allianz","DE0008404005",0.00,91.862,0.00,"","",0.00,"_1937897",91,862,390.50];
-finanzdaten[3] = ["ETF AI Infrastructure","IE000X59ZHE2",0.00,476.198976,0.00,"","",0.00,"_486572892",476.198976,6.19];
-finanzdaten[4] = ["Fonds Allianz US Equity","LU0256843979",0.00,5.048,0.00,"","",0.00,"_34698633",4.873,457.889];
-finanzdaten[5] = ["Aktie Panasonic","JP3866800000",0.00,26,0.00,"","",0.00,"_1547506",26,10.27];
-finanzdaten[6] = ["Aktie First Graphene","AU000000FGR3",0.00,250,0.00,"","",0.00,"_148799559",250,0.05];
+finanzdaten[0] = ["ETF Core MSCI World","IE00B4L5Y983",0.00,500.084082,0.00,"","",0.00,"_109183133",500.084082,111.74,0.00];
+finanzdaten[1] = ["ETF MSCI World SRI","IE00BYX2JD69",0.00,3990.067096,0.00,"","",0.00,"_242889139",3792.520514,12.19,0.00];
+finanzdaten[2] = ["Aktie Allianz","DE0008404005",0.00,91.862,0.00,"","",0.00,"_1937897",91.862,390.50,0.00];
+finanzdaten[3] = ["ETF AI Infrastructure","IE000X59ZHE2",0.00,476.198976,0.00,"","",0.00,"_486572892",476.198976,6.19,0.00];
+finanzdaten[4] = ["Fonds Allianz US Equity","LU0256843979",0.00,5.048,0.00,"","",0.00,"_34698633",4.873,457.889,0.00];
+finanzdaten[5] = ["Aktie Panasonic","JP3866800000",0.00,26,0.00,"","",0.00,"_1547506",26,10.27,0.00];
+finanzdaten[6] = ["Aktie First Graphene","AU000000FGR3",0.00,250,0.00,"","",0.00,"_148799559",250,0.05,0.00];
 
 // Widget initialisieren
 let widget = new ListWidget();
@@ -73,26 +73,26 @@ if (debuglevel > 0) console.log(" ");
 // Prüfung, ob Wert gefunden wurde
 // WENN nicht, dann Namen, Kurse und Timestamps von gettex (_TRO) abrufen
 for (let i=0; i<anzahl; i++ ) {
- if (finanzdaten[i][2] == 0.00) {
-    if (debuglevel > 0) console.log("FEHLER Kein aktueller Kurs für " + finanzdaten[i][5]);
-    let isinUrl = "https://www.consorsbank.de/web-financialinfo-service/api/marketdata/stocks?id="+finanzdaten[i][1]+"&field=BasicV1&field=ExchangesV2";
-    let isinData = await new Request(isinUrl).loadJSON();
-    if (debuglevel > 0) console.log(isinUrl);
-    finanzdaten[i][5] = isinData[0].BasicV1.NAME_SECURITY;
-    if (debuglevel > 0) console.log(finanzdaten[i][5]);
-    for (let key in isinData[0].ExchangesV2) {
-        if (isinData[0].ExchangesV2[key].CONSORS_EXCHANGE_CODE == "_TRO") {
-            finanzdaten[i][2] = isinData[0].ExchangesV2[key].PRICE;
-            if (debuglevel > 0) console.log("Aktueller Kurs: " + finanzdaten[i][2]);
-            finanzdaten[i][6] = isinData[0].ExchangesV2[key].DATETIME_PRICE;
-            if (debuglevel > 0) console.log("Zeit Kursdaten: " + finanzdaten[i][6]);
-        } 
-    }
+    if (finanzdaten[i][2] == 0.00) {
+        if (debuglevel > 0) console.log("FEHLER Kein aktueller Kurs für " + finanzdaten[i][5]);
+        let isinUrl = "https://www.consorsbank.de/web-financialinfo-service/api/marketdata/stocks?id="+finanzdaten[i][1]+"&field=BasicV1&field=ExchangesV2";
+        let isinData = await new Request(isinUrl).loadJSON();
+        if (debuglevel > 0) console.log(isinUrl);
+        finanzdaten[i][5] = isinData[0].BasicV1.NAME_SECURITY;
+        if (debuglevel > 0) console.log(finanzdaten[i][5]);
+        for (let key in isinData[0].ExchangesV2) {
+            if (isinData[0].ExchangesV2[key].CONSORS_EXCHANGE_CODE == "_TRO") {
+                finanzdaten[i][2] = isinData[0].ExchangesV2[key].PRICE;
+                if (debuglevel > 0) console.log("Aktueller Kurs: " + finanzdaten[i][2]);
+                finanzdaten[i][6] = isinData[0].ExchangesV2[key].DATETIME_PRICE;
+                if (debuglevel > 0) console.log("Zeit Kursdaten: " + finanzdaten[i][6]);
+            } 
+        }
     }
 }
 if (debuglevel > 0) console.log(" ");
 
-// Startkurs des Tages abrufen
+// Abruf Startkurs des Tages
 for (let i=0; i<anzahl; i++ ) {
     let histUrl = "https://www.consorsbank.de/web-financialinfo-service/api/marketdata/securities?id="+finanzdaten[i][8]+"&field=ChartHistoryV1&idTypeOffset=51&historySince=0&resolution=15m&pagesize=2000&sortorder=DATETIME_FIRST";
     let histData = await new Request(histUrl).loadJSON();
@@ -113,11 +113,47 @@ for (let i=0; i<anzahl; i++ ) {
 if (debuglevel > 0) console.log(" ");
 
 
-// Gesamtwerte berechnen
+// Berechnung aktueller Gesamtwert für einzelne Finanzdaten
 for (let i=0; i<anzahl; i++ ) {
     finanzdaten[i][4] = finanzdaten[i][2] * finanzdaten[i][3];
 }
 
+
+// Berechnung aktuelle Gesamtsumme über alle Finanzdaten
+let sum = 0;
+for (let i=0; i<anzahl; i++ ) {
+    sum = sum + finanzdaten[i][4];
+    if (debuglevel > 0) console.log(finanzdaten[i][4]);
+}
+if (debuglevel > 0) console.log("Aktuelle Gesamtsumme: " + sum);
+if (debuglevel > 0) console.log(" ");
+
+
+// Berechnung historischer Gesamtwert für einzelne Finanzdaten
+for (let i=0; i<anzahl; i++ ) {
+    finanzdaten[i][11] = finanzdaten[i][9] * finanzdaten[i][10];
+}
+
+
+// Berechnung historische Gesamtsumme über alle Finanzdaten
+let summejahresanfang = 0;
+for (let i=0; i<anzahl; i++ ) {
+    summejahresanfang = summejahresanfang + finanzdaten[i][11];
+    if (debuglevel > 0) console.log(finanzdaten[i][11]);
+}
+if (debuglevel > 0) console.log("Gesamtsumme Jahresanfang: " + summejahresanfang);
+if (debuglevel > 0) console.log(" ");
+
+
+// Berechnung Kursentwicklung Tag in Prozent
+let summetagesanfang = 0;
+for (let i=0; i<anzahl; i++ ) {
+    summetagesanfang = summetagesanfang + finanzdaten[i][3] * finanzdaten[i][7];
+}
+let kursentwicklungtagprozent = ((sum / summetagesanfang) - 1)*100;
+if (debuglevel > 0) console.log("Gesamtsumme Tagesanfang: " + summetagesanfang);
+if (debuglevel > 0) console.log("Kursentwicklung Tag Prozent: " + kursentwicklungtagprozent);
+if (debuglevel > 0) console.log(" ");
 
 // Schriftarten definieren
 //let textschriftart = new Font("Courier", 11);
@@ -179,6 +215,19 @@ for (let i=0; i<anzahl; i++ ) {
     text.font=textschriftartfett;
     text.textColor = farbetextoben;
 }
+hauptzeilenstack.addSpacer();
+
+// Ausgabe Gesamtsumme
+hauptzeilenstack.addText('Gesamtsumme: ' + runden(sum,2).toFixed(2).toString().replace(".",",") + " €");
+hauptzeilenstack.addSpacer();
+
+// Ausgabe Entwicklung heute
+hauptzeilenstack.addText('Entwicklung durch Kurs heute: ' + runden(kursentwicklungtagprozent,2).toFixed(2).toString().replace(".",",") + " %");
+hauptzeilenstack.addSpacer();
+
+// Ausgabe Entwicklung Jahr
+hauptzeilenstack.addText('Entwicklung durch Kurs aktuelles Jahr: ???');
+
 
 //Ausgabe Footer
 hauptzeilenstack.addSpacer();
@@ -188,6 +237,7 @@ footerstack.layoutHorizontally();
 // Berechnung Teilung Liste
 let teilung = Math.ceil(anzahl / 2);
 if (debuglevel > 0) console.log("Teilung Liste nach " + teilung + " Einträgen");
+if (debuglevel > 0) console.log(" ");
 
 //Ausgabe Liste Timestamps 1. Spalte
 let footerlinksstack = footerstack.addStack();
@@ -221,7 +271,7 @@ for (let i=teilung; i < anzahl; i++ ) {
     text.textColor=Color.lightGray();
 }
 
-// Ausgabe Datum Anteile, Version und Uhrzeit
+// Ausgabe Standdatum Anteile, Version und Uhrzeit
 let stundenaktuell = heute.getHours();
 let stundenaktuelltext = stundenaktuell;
 if (stundenaktuell < 10) {stundenaktuelltext = '0'+ stundenaktuell;}
@@ -242,6 +292,7 @@ versiontext = '[V'+ version + ', '+stundenaktuelltext+':'+minutenaktuelltext +']
 let textzeileversion = footerrechtsstack.addText(versiontext);
 textzeileversion.font=sehrkleinschriftart;
 textzeileversion.textColor=Color.lightGray();
+
 
 // Widget starten
 widget.presentLarge();
@@ -269,4 +320,12 @@ function nullendatum(datum) {
     let JJJJ = datum.getFullYear();
     let datumneu = DD + "." + MM + "." + JJJJ;
     return datumneu;   
+}
+
+
+// Funktion Runden der Zahl x auf n Nachkommastellen
+function runden(x, n)  
+{  
+  let a = Math.pow(10, n);  
+  return (Math.round(x * a) / a);  
 }
