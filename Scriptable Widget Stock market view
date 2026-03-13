@@ -3,7 +3,7 @@
 
 
 // Version
-const version = "1.00";
+const version = "1.01";
 // 13.03.2026
 
 
@@ -69,7 +69,7 @@ for (let i=0; i<anzahl; i++ ) {
 if (debuglevel > 0) console.log(" ");
 
 // Prüfung, ob Wert gefunden wurde
-// WENN nicht, dann Namen, Kurse und Timestamps von gettex (_TRO) abrufen
+// WENN nicht gefunden DANN Namen, Kurse und Timestamps von gettex (_TRO) abrufen
 for (let i=0; i<anzahl; i++ ) {
     if (finanzdaten[i][2] == 0.00) {
         if (debuglevel > 0) console.log("FEHLER Kein aktueller Kurs für " + finanzdaten[i][5]);
@@ -101,7 +101,7 @@ for (let i=0; i<anzahl; i++ ) {
 
 if (debuglevel > 0) console.log(" ");
 // Prüfung, ob Startkurs ermittelt wurde
-// WENN nicht, dann Startkurs = Aktueller Kurs
+// WENN nicht ermittelt DANN Startkurs = aktueller Kurs
 for (let i=0; i<anzahl; i++ ) {
     if (finanzdaten[i][7] == null) {
         if (debuglevel > 0) console.log("FEHLER Kein Tagesstartkurs für " + finanzdaten[i][5] + ", daher auf " + finanzdaten[i][2] + " gesetzt");
@@ -171,7 +171,7 @@ let kursentwicklungjahrbetrag = summetheoretisch - summejahresanfang;
 let entwicklungjahrbetrag = sum - summejahresanfang;
 
 
-// Schriftarten definieren
+// Schriftarten
 let textschriftartfett = Font.boldSystemFont(9);
 let farbetextoben = Color.gray();
 let kleineueberschrift = Font.italicSystemFont(8);
@@ -193,7 +193,7 @@ headerspalte1stack.layoutVertically();
 headerspalte1stack.size = new Size(120,0);
 if (debuglevel > 1) headerspalte1stack.backgroundColor = new Color('7456ee');
 
-//Ausgabe Namen (Spalte 1)
+// Ausgabe Namen (Spalte 1)
 for (let i=0; i<anzahl; i++ ) {
     let text = headerspalte1stack.addText(finanzdaten[i][0]);
     text.font=textschriftartfett;
@@ -203,10 +203,10 @@ for (let i=0; i<anzahl; i++ ) {
 headerspaltenstack.addSpacer();
 let headerspalte2stack = headerspaltenstack.addStack();
 headerspalte2stack.layoutVertically();
-headerspalte2stack.size = new Size(80,0);
+headerspalte2stack.size = new Size(60,0);
 if (debuglevel > 1) headerspalte2stack.backgroundColor = new Color('f45611');
 
-//Ausgabe Kurse (Spalte 2)
+// Ausgabe Kurse (Spalte 2)
 let headers2z1stack = headerspalte2stack.addStack();
 headers2z1stack.layoutHorizontally();
 headers2z1stack.addSpacer();
@@ -266,9 +266,10 @@ textheaders2z7.textColor = farbetextoben;
 headerspaltenstack.addSpacer();
 let headerspalte3stack = headerspaltenstack.addStack();
 headerspalte3stack.layoutVertically();
+headerspalte3stack.size = new Size(68,0);
 if (debuglevel > 1) headerspalte3stack.backgroundColor = new Color('763334');
 
-//Ausgabe Gesamtwerte (Spalte 3)
+// Ausgabe Gesamtwerte (Spalte 3)
 let headers3z1stack = headerspalte3stack.addStack();
 headers3z1stack.layoutHorizontally();
 headers3z1stack.addSpacer();
@@ -339,7 +340,28 @@ textheaders3z7.textColor = farbetextoben;
 if (finanzdaten[6][2] > finanzdaten[6][7]) textheaders3z7.textColor = Color.green();
 if (finanzdaten[6][2] < finanzdaten[6][7]) textheaders3z7.textColor = Color.red();         
 
+//headerspaltenstack.addSpacer();
+let headerspalte4stack = headerspaltenstack.addStack();
+headerspalte4stack.layoutVertically();
+//headerspalte4stack.size = new Size(120,0);
+if (debuglevel > 1) headerspalte4stack.backgroundColor = new Color('761234');
+
+// Ausgabe Betrag Tagesentwicklung (Spalte 4)
+let betragtag = 0;
+for (let i=0; i < anzahl; i++ ) {
+    if (finanzdaten[i][2]-finanzdaten[i][7] > 0) {
+        betragtag = " (+" + (finanzdaten[i][2]-finanzdaten[i][7]).toFixed(2).toString().replace(".",",") + " €)";
+    } else {
+        betragtag = " (" + (finanzdaten[i][2]-finanzdaten[i][7]).toFixed(2).toString().replace(".",",") + " €)";
+    }
+    let textbetragtag = headerspalte4stack.addText(betragtag);
+    textbetragtag.font = textschriftartfett;
+    textbetragtag.textColor = farbetextoben;
+}
+
+
 hauptzeilenstack.addSpacer();
+
 
 // Ausgabe Gesamtsumme
 let ueberschriftgesamtsumme = hauptzeilenstack.addText('Gesamtsumme');
@@ -403,7 +425,7 @@ zentriert4stack.addSpacer();
 hauptzeilenstack.addSpacer();
 
 
-//Ausgabe Footer
+// Ausgabe Footer
 hauptzeilenstack.addSpacer();
 let footerstack = hauptzeilenstack.addStack();
 footerstack.layoutHorizontally();
@@ -413,7 +435,7 @@ let teilung = Math.ceil(anzahl / 2);
 if (debuglevel > 0) console.log("Teilung Liste nach " + teilung + " Einträgen");
 if (debuglevel > 0) console.log(" ");
 
-//Ausgabe Liste Timestamps 1. Spalte
+// Ausgabe Liste Timestamps 1. Spalte
 let footerlinksstack = footerstack.addStack();
 footerlinksstack.layoutVertically();
 if (debuglevel > 1) footerlinksstack.backgroundColor = new Color('8712ff');
