@@ -9,11 +9,12 @@ const version = "0.04";
 
 // ToDo / Bugs / Ideen:
 // Formatieren der Anzeigen (Geld rechtsbündig, Schriftgrößen, Schriftfarben)
-// Kursentwicklung Jahr in Prozent (inkl. Nachkäufe)
+// Negative Entwicklungen in rot
+// Zu alte Daten rot
 
 
 // Debuglevel
-let debuglevel = 1;
+let debuglevel = 0;
 // 0 - keine Analyse
 // 1 - Analyse Berechnungswerte
 // 2 - Analyse Berechnungswerte und Einfärben Stacks
@@ -119,6 +120,12 @@ for (let i=0; i<anzahl; i++ ) {
 }
 
 
+// Berechnung historischer Gesamtwert für einzelne Finanzdaten
+for (let i=0; i<anzahl; i++ ) {
+    finanzdaten[i][11] = finanzdaten[i][9] * finanzdaten[i][10];
+}
+
+
 // Berechnung aktuelle Gesamtsumme über alle Finanzdaten
 let sum = 0;
 for (let i=0; i<anzahl; i++ ) {
@@ -129,31 +136,35 @@ if (debuglevel > 0) console.log("Aktuelle Gesamtsumme: " + sum);
 if (debuglevel > 0) console.log(" ");
 
 
-// Berechnung historischer Gesamtwert für einzelne Finanzdaten
-for (let i=0; i<anzahl; i++ ) {
-    finanzdaten[i][11] = finanzdaten[i][9] * finanzdaten[i][10];
-}
-
-
-// Berechnung historische Gesamtsumme über alle Finanzdaten
-let summejahresanfang = 0;
-for (let i=0; i<anzahl; i++ ) {
-    summejahresanfang = summejahresanfang + finanzdaten[i][11];
-    if (debuglevel > 0) console.log(finanzdaten[i][11]);
-}
-if (debuglevel > 0) console.log("Gesamtsumme Jahresanfang: " + summejahresanfang);
-if (debuglevel > 0) console.log(" ");
-
-
 // Berechnung Kursentwicklung Tag in Prozent
 let summetagesanfang = 0;
 for (let i=0; i<anzahl; i++ ) {
     summetagesanfang = summetagesanfang + finanzdaten[i][3] * finanzdaten[i][7];
 }
-let kursentwicklungtagprozent = ((sum / summetagesanfang) - 1)*100;
+let kursentwicklungtagprozent = ((sum / summetagesanfang) - 1) * 100;
 if (debuglevel > 0) console.log("Gesamtsumme Tagesanfang: " + summetagesanfang);
 if (debuglevel > 0) console.log("Kursentwicklung Tag Prozent: " + kursentwicklungtagprozent);
 if (debuglevel > 0) console.log(" ");
+
+
+// Berechnung Kursentwicklung Jahr in Prozent
+let summejahresanfang = 0;
+for (let i=0; i<anzahl; i++ ) {
+    summejahresanfang = summejahresanfang + finanzdaten[i][11];
+    if (debuglevel > 0) console.log(finanzdaten[i][11]);
+}
+let summetheoretisch = 0;
+let werttheoretisch = 0;
+for (let i=0; i<anzahl; i++ ) {
+    werttheoretisch = finanzdaten[i][2] * finanzdaten[i][9];
+    summetheoretisch = summetheoretisch + werttheoretisch;
+}
+let kursentwicklungjahrprozent = ((summetheoretisch / summejahresanfang) - 1) * 100;
+if (debuglevel > 0) console.log("Gesamtsumme Jahresanfang: " + summejahresanfang);
+if (debuglevel > 0) console.log("Gesamtsumme theoretisch (gleiche Aktienanzahl): " + summetheoretisch);
+if (debuglevel > 0) console.log("Kursentwicklung Jahr Prozent: " + kursentwicklungjahrprozent);
+if (debuglevel > 0) console.log(" ");
+
 
 // Schriftarten definieren
 //let textschriftart = new Font("Courier", 11);
@@ -181,9 +192,10 @@ headerspaltenstack.layoutHorizontally();
 
 let headerspalte1stack = headerspaltenstack.addStack();
 headerspalte1stack.layoutVertically();
+headerspalte1stack.size = new Size(120,0);
 if (debuglevel > 1) headerspalte1stack.backgroundColor = new Color('7456ee');
 
-//Ausgabe Name
+//Ausgabe Namen (Spalte 1)
 for (let i=0; i<anzahl; i++ ) {
     let text = headerspalte1stack.addText(finanzdaten[i][0]);
     text.font=textschriftartfett;
@@ -193,28 +205,128 @@ for (let i=0; i<anzahl; i++ ) {
 headerspaltenstack.addSpacer();
 let headerspalte2stack = headerspaltenstack.addStack();
 headerspalte2stack.layoutVertically();
+headerspalte2stack.size = new Size(80,0);
 if (debuglevel > 1) headerspalte2stack.backgroundColor = new Color('f45611');
 
-//Ausgabe Kurs
-for (let i=0; i<anzahl; i++ ) {
-    let kurs = finanzdaten[i][2].toFixed(3).toString().replace(".",",") + " €";
-    let text = headerspalte2stack.addText(kurs);
-    text.font=textschriftartfett;
-    text.textColor = farbetextoben;
-}
+//Ausgabe Kurse (Spalte 2)
+let headers2z1stack = headerspalte2stack.addStack();
+headers2z1stack.layoutHorizontally();
+headers2z1stack.addSpacer();
+let kursheaders2z1 = finanzdaten[0][2].toFixed(3).toString().replace(".",",") + " €";
+let textheaders2z1 = headers2z1stack.addText(kursheaders2z1);
+textheaders2z1.font=textschriftartfett;
+textheaders2z1.textColor = farbetextoben;
+
+let headers2z2stack = headerspalte2stack.addStack();
+headers2z2stack.layoutHorizontally();
+headers2z2stack.addSpacer();
+let kursheaders2z2 = finanzdaten[1][2].toFixed(3).toString().replace(".",",") + " €";
+let textheaders2z2 = headers2z2stack.addText(kursheaders2z2);
+textheaders2z2.font=textschriftartfett;
+textheaders2z2.textColor = farbetextoben;
+
+let headers2z3stack = headerspalte2stack.addStack();
+headers2z3stack.layoutHorizontally();
+headers2z3stack.addSpacer();
+let kursheaders2z3 = finanzdaten[2][2].toFixed(3).toString().replace(".",",") + " €";
+let textheaders2z3 = headers2z3stack.addText(kursheaders2z3);
+textheaders2z3.font=textschriftartfett;
+textheaders2z3.textColor = farbetextoben;
+
+let headers2z4stack = headerspalte2stack.addStack();
+headers2z4stack.layoutHorizontally();
+headers2z4stack.addSpacer();
+let kursheaders2z4 = finanzdaten[3][2].toFixed(3).toString().replace(".",",") + " €";
+let textheaders2z4 = headers2z4stack.addText(kursheaders2z4);
+textheaders2z4.font=textschriftartfett;
+textheaders2z4.textColor = farbetextoben;
+
+let headers2z5stack = headerspalte2stack.addStack();
+headers2z5stack.layoutHorizontally();
+headers2z5stack.addSpacer();
+let kursheaders2z5 = finanzdaten[4][2].toFixed(3).toString().replace(".",",") + " €";
+let textheaders2z5 = headers2z5stack.addText(kursheaders2z5);
+textheaders2z5.font=textschriftartfett;
+textheaders2z5.textColor = farbetextoben;
+
+let headers2z6stack = headerspalte2stack.addStack();
+headers2z6stack.layoutHorizontally();
+headers2z6stack.addSpacer();
+let kursheaders2z6 = finanzdaten[5][2].toFixed(3).toString().replace(".",",") + " €";
+let textheaders2z6 = headers2z6stack.addText(kursheaders2z6);
+textheaders2z6.font=textschriftartfett;
+textheaders2z6.textColor = farbetextoben;
+
+let headers2z7stack = headerspalte2stack.addStack();
+headers2z7stack.layoutHorizontally();
+headers2z7stack.addSpacer();
+let kursheaders2z7 = finanzdaten[6][2].toFixed(3).toString().replace(".",",") + " €";
+let textheaders2z7 = headers2z7stack.addText(kursheaders2z7);
+textheaders2z7.font=textschriftartfett;
+textheaders2z7.textColor = farbetextoben;
 
 headerspaltenstack.addSpacer();
 let headerspalte3stack = headerspaltenstack.addStack();
 headerspalte3stack.layoutVertically();
 if (debuglevel > 1) headerspalte3stack.backgroundColor = new Color('763334');
 
-//Ausgabe Gesamtwert
-for (let i=0; i<anzahl; i++ ) {
-    let gesamtwert = finanzdaten[i][4].toFixed(2).toString().replace(".",",") + " €";
-    let text = headerspalte3stack.addText(gesamtwert);
-    text.font=textschriftartfett;
-    text.textColor = farbetextoben;
-}
+//Ausgabe Gesamtwerte (Spalte 3)
+let headers3z1stack = headerspalte3stack.addStack();
+headers3z1stack.layoutHorizontally();
+headers3z1stack.addSpacer();
+let gesamtwertheaders3z1 = tausenderpunkt(finanzdaten[0][4].toFixed(2).toString().replace(".",",")) + " €";
+let textheaders3z1 = headers3z1stack.addText(gesamtwertheaders3z1);
+textheaders3z1.font=textschriftartfett;
+textheaders3z1.textColor = farbetextoben;
+  
+let headers3z2stack = headerspalte3stack.addStack();
+headers3z2stack.layoutHorizontally();
+headers3z2stack.addSpacer();
+let gesamtwertheaders3z2 = tausenderpunkt(finanzdaten[1][4].toFixed(2).toString().replace(".",",")) + " €";
+let textheaders3z2 = headers3z2stack.addText(gesamtwertheaders3z2);
+textheaders3z2.font=textschriftartfett;
+textheaders3z2.textColor = farbetextoben;    
+      
+let headers3z3stack = headerspalte3stack.addStack();
+headers3z3stack.layoutHorizontally();
+headers3z3stack.addSpacer();
+let gesamtwertheaders3z3 = tausenderpunkt(finanzdaten[2][4].toFixed(2).toString().replace(".",",")) + " €";
+let textheaders3z3 = headers3z3stack.addText(gesamtwertheaders3z3);
+textheaders3z3.font=textschriftartfett;
+textheaders3z3.textColor = farbetextoben;            
+          
+let headers3z4stack = headerspalte3stack.addStack();
+headers3z4stack.layoutHorizontally();
+headers3z4stack.addSpacer();
+let gesamtwertheaders3z4 = tausenderpunkt(finanzdaten[3][4].toFixed(2).toString().replace(".",",")) + " €";
+let textheaders3z4 = headers3z4stack.addText(gesamtwertheaders3z4);
+textheaders3z4.font=textschriftartfett;
+textheaders3z4.textColor = farbetextoben;         
+            
+let headers3z5stack = headerspalte3stack.addStack();
+headers3z5stack.layoutHorizontally();
+headers3z5stack.addSpacer();
+let gesamtwertheaders3z5 = tausenderpunkt(finanzdaten[4][4].toFixed(2).toString().replace(".",",")) + " €";
+let textheaders3z5 = headers3z5stack.addText(gesamtwertheaders3z5);
+textheaders3z5.font=textschriftartfett;
+textheaders3z5.textColor = farbetextoben;               
+                    
+let headers3z6stack = headerspalte3stack.addStack();
+headers3z6stack.layoutHorizontally();
+headers3z6stack.addSpacer();
+let gesamtwertheaders3z6 = tausenderpunkt(finanzdaten[5][4].toFixed(2).toString().replace(".",",")) + " €";
+let textheaders3z6 = headers3z6stack.addText(gesamtwertheaders3z6);
+textheaders3z6.font=textschriftartfett;
+textheaders3z6.textColor = farbetextoben;               
+                                            
+let headers3z7stack = headerspalte3stack.addStack();
+headers3z7stack.layoutHorizontally();
+headers3z7stack.addSpacer();
+let gesamtwertheaders3z7 = tausenderpunkt(finanzdaten[6][4].toFixed(2).toString().replace(".",",")) + " €";
+let textheaders3z7 = headers3z7stack.addText(gesamtwertheaders3z7);
+textheaders3z7.font=textschriftartfett;
+textheaders3z7.textColor = farbetextoben;               
+
 hauptzeilenstack.addSpacer();
 
 // Ausgabe Gesamtsumme
@@ -226,7 +338,7 @@ hauptzeilenstack.addText('Entwicklung durch Kurs heute: ' + runden(kursentwicklu
 hauptzeilenstack.addSpacer();
 
 // Ausgabe Entwicklung Jahr
-hauptzeilenstack.addText('Entwicklung durch Kurs aktuelles Jahr: ???');
+hauptzeilenstack.addText('Entwicklung durch Kurs aktuelles Jahr: ' + runden(kursentwicklungjahrprozent,2).toFixed(2).toString().replace(".",",") + " %");
 
 
 //Ausgabe Footer
@@ -296,6 +408,24 @@ textzeileversion.textColor=Color.lightGray();
 
 // Widget starten
 widget.presentLarge();
+
+
+// Funktion Tausenderpunkt hinzufügen
+function tausenderpunkt (string1) {
+    string2 = string1;
+    if (string1.substring(0,1) == '-') string2 = string1.substring(1);
+    
+    if (string2.length > 6) {
+        let t=string2.length-6;
+        string2 = string2.substring(0,t)+"."+string2.substring(t);
+    }
+    
+    if (string1.substring(0,1) == '-') string2 = '-' + string2;
+    
+    //if (debuglevel > 0) console.log("Betrag ohne Tausenderpunkt: " + string1);
+    //if (debuglevel > 0) console.log("Betrag mit Tausenderpunkt: " + string2);
+    return string2;
+}
 
 
 // Funktion Uhrzeit (wandelt UTC in aktuelle Uhrzeit um)
