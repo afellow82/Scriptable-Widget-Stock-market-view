@@ -3,11 +3,15 @@
 
 
 // Version
-const version = "0.01";
-// 12.03.2026
+const version = "0.02";
+// 13.03.2026
 
 
-// ToDo / Bugs / Ideen: weitere Finanzdaten ergänzen, Datenstand Kurse im Footer auif zwei Spalten verteilen?
+// ToDo / Bugs / Ideen:
+// Datenstand Kurse im Footer auf zwei Spalten verteilen
+// Gesamtsumme
+// Entwicklung Tag
+// Entwicklung Jahr (inkl. Nachkäufe)
 
 
 // Debuglevel
@@ -33,12 +37,15 @@ const datumanteile = new Date("03/02/2026");
 // #8 - ID Consorsbank
 // #9 - Anzahl Aktien Jahresanfang (händisch eingetragen, aktuell 01.01.2025)
 // #10 - Kurs Jahresanfang (händisch eingetragen, aktuell 01.01.2025)
-const anzahl = 3;
+const anzahl = 7;
 const finanzdaten = [];
 finanzdaten[0] = ["ETF Core MSCI World","IE00B4L5Y983",0.00,500.084082,0.00,"","",0.00,"_109183133",500.084082,111.74];
 finanzdaten[1] = ["ETF MSCI World SRI","IE00BYX2JD69",0.00,3990.067096,0.00,"","",0.00,"_242889139",3792.520514,12.19];
 finanzdaten[2] = ["Aktie Allianz","DE0008404005",0.00,91.862,0.00,"","",0.00,"_1937897",91,862,390.50];
-
+finanzdaten[3] = ["ETF AI Infrastructure","IE000X59ZHE2",0.00,476.198976,0.00,"","",0.00,"_486572892",476.198976,6.19];
+finanzdaten[4] = ["Fonds Allianz US Equity","LU0256843979",0.00,5.048,0.00,"","",0.00,"_34698633",4.873,457.889];
+finanzdaten[5] = ["Aktie Panasonic","JP3866800000",0.00,26,0.00,"","",0.00,"_1547506",26,10.27];
+finanzdaten[6] = ["Aktie First Graphene","AU000000FGR3",0.00,250,0.00,"","",0.00,"_148799559",250,0.05];
 
 // Widget initialisieren
 let widget = new ListWidget();
@@ -46,7 +53,7 @@ widget.setPadding(10, 10 , 10, 10);
 let heute = new Date();
 
 
-// Namen, Kurse und Timestamps abrufen
+// Namen, Kurse und Timestamps von Lang & Schwarz (@_LUSG) abrufen
 for (let i=0; i<anzahl; i++ ) {
     let isinUrl = "https://www.consorsbank.de/web-financialinfo-service/api/marketdata/stocks?id="+finanzdaten[i][1]+"&field=BasicV1&field=ExchangesV2";
     let isinData = await new Request(isinUrl).loadJSON();
@@ -55,8 +62,6 @@ for (let i=0; i<anzahl; i++ ) {
     if (debuglevel > 1) console.log(finanzdaten[i][5]);
     for (let key in isinData[0].ExchangesV2) {
         if (isinData[0].ExchangesV2[key].CONSORS_EXCHANGE_CODE == "@_LUSG") {
-            //if (debuglevel > 1) console.log(key);
-            //if (debuglevel > 1) console.log(isinData[0].ExchangesV2[key].CONSORS_EXCHANGE_CODE);
             finanzdaten[i][2] = isinData[0].ExchangesV2[key].PRICE;
             if (debuglevel > 1) console.log("Aktueller Kurs: " + finanzdaten[i][2]);
             finanzdaten[i][6] = isinData[0].ExchangesV2[key].DATETIME_PRICE;
@@ -64,7 +69,29 @@ for (let i=0; i<anzahl; i++ ) {
         } 
     }
 }
+if (debuglevel > 1) console.log(" ");
 
+// Prüfung, ob Wert gefunden wurde
+// WENN nicht, dann Namen, Kurse und Timestamps von gettex (_TRO) abrufen
+for (let i=0; i<anzahl; i++ ) {
+ if (finanzdaten[i][2] == 0.00) {
+    if (debuglevel > 1) console.log("FEHLER Kein aktueller Kurs für " + finanzdaten[i][5]);
+    let isinUrl = "https://www.consorsbank.de/web-financialinfo-service/api/marketdata/stocks?id="+finanzdaten[i][1]+"&field=BasicV1&field=ExchangesV2";
+    let isinData = await new Request(isinUrl).loadJSON();
+    if (debuglevel > 1) console.log(isinUrl);
+    finanzdaten[i][5] = isinData[0].BasicV1.NAME_SECURITY;
+    if (debuglevel > 1) console.log(finanzdaten[i][5]);
+    for (let key in isinData[0].ExchangesV2) {
+        if (isinData[0].ExchangesV2[key].CONSORS_EXCHANGE_CODE == "_TRO") {
+            finanzdaten[i][2] = isinData[0].ExchangesV2[key].PRICE;
+            if (debuglevel > 1) console.log("Aktueller Kurs: " + finanzdaten[i][2]);
+            finanzdaten[i][6] = isinData[0].ExchangesV2[key].DATETIME_PRICE;
+            if (debuglevel > 1) console.log("Zeit Kursdaten: " + finanzdaten[i][6]);
+        } 
+    }
+    }
+}
+if (debuglevel > 1) console.log(" ");
 
 // Startkurs des Tages abrufen
 for (let i=0; i<anzahl; i++ ) {
@@ -74,6 +101,17 @@ for (let i=0; i<anzahl; i++ ) {
     finanzdaten[i][7] = histData[0].ChartHistoryV1.PERF_START_PRICE;
     if (debuglevel > 1) console.log("Kurs Tagesbeginn: " + finanzdaten[i][7]);
 }
+
+if (debuglevel > 1) console.log(" ");
+// Prüfung, ob Startkurs ermittelt wurde
+// WENN nicht, dann Startkurs = Aktueller Kurs
+for (let i=0; i<anzahl; i++ ) {
+    if (finanzdaten[i][7] == null) {
+        if (debuglevel > 1) console.log("FEHLER Kein Tagesstartkurs für " + finanzdaten[i][5] + ", daher auf " + finanzdaten[i][2] + " gesetzt");
+        finanzdaten[i][7] = finanzdaten[i][2];
+    }
+}
+if (debuglevel > 1) console.log(" ");
 
 
 // Gesamtwerte berechnen
@@ -143,53 +181,7 @@ for (let i=0; i<anzahl; i++ ) {
     text.textColor = farbetextoben;
 }
 
-/*
-// Ausgabe Footer
-let rechtsstack4 = hauptzeilenstack.addStack();
-rechtsstack4.layoutHorizontally();
-
-let timestamptext1 = rechtsstack4.addText("Stand Kurs 1: "+ uhrzeit(finanzdaten[0][6]));
-timestamptext1.font=sehrkleinschriftart;
-timestamptext1.textColor=Color.lightGray();
-
-rechtsstack4.addSpacer();
-if (debuglevel > 0) {rechtsstack4.backgroundColor = new Color('ABFE11')};
-let textzeiledatenstand = rechtsstack4.addText('Stand Anteile: '+ nullendatum(datumanteile));
-textzeiledatenstand.font=sehrkleinschriftart;
-
-//rote Anzeige wenn letztes Update vor mehr als 35 Tagen
-let alterdaten = Math.floor((heute.getTime() - datumanteile.getTime())/(1000*60*60*24));
-if (alterdaten > 35){
-        textzeiledatenstand.textColor=Color.red();
-    } else {
-        textzeiledatenstand.textColor=Color.lightGray();;
-    }
-
-// Version, Uhrzeit und Timestamp (bei Medium-Widget) einfügen
-let stundenaktuell = heute.getHours();
-let stundenaktuelltext = stundenaktuell;
-if (stundenaktuell < 10) {stundenaktuelltext = '0'+ stundenaktuell;}
-let minutenaktuell = heute.getMinutes();
-let minutenaktuelltext = minutenaktuell;
-if (minutenaktuell < 10) {minutenaktuelltext = '0'+ minutenaktuell;}
-let rechtsstack5 = hauptzeilenstack.addStack();
-rechtsstack5.layoutHorizontally();
-
-
-let timestamptext2 = rechtsstack5.addText("Stand Kurs 2: "+ uhrzeit(finanzdaten[1][6]));
-timestamptext2.font=sehrkleinschriftart;
-timestamptext2.textColor=Color.lightGray();
-
-rechtsstack5.addSpacer();
-if (debuglevel > 0) {rechtsstack5.backgroundColor = new Color('6281EE')};
-let textzeileversiontext = "version";
-if (debuglevel == 0) textzeileversiontext = '[V'+ version + ', '+stundenaktuelltext+':'+minutenaktuelltext +']';
-let textzeileversion = rechtsstack5.addText(textzeileversiontext);
-textzeileversion.font=sehrkleinschriftart;
-textzeileversion.textColor=Color.lightGray();
-*/
-
-//Ausgabe Footer neu
+//Ausgabe Footer
 hauptzeilenstack.addSpacer();
 let footerstack = hauptzeilenstack.addStack();
 footerstack.layoutHorizontally();
@@ -210,7 +202,6 @@ for (let i=0; i<anzahl; i++ ) {
     text.font=sehrkleinschriftart;
     text.textColor=Color.lightGray();
 }
-
 
 // Ausgabe Datum Anteile, Version und Uhrzeit
 let stundenaktuell = heute.getHours();
