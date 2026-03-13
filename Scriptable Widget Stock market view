@@ -3,7 +3,7 @@
 
 
 // Version
-const version = "0.04";
+const version = "0.05";
 // 13.03.2026
 
 
@@ -136,7 +136,7 @@ if (debuglevel > 0) console.log("Aktuelle Gesamtsumme: " + sum);
 if (debuglevel > 0) console.log(" ");
 
 
-// Berechnung Kursentwicklung Tag in Prozent
+// Berechnung Kursentwicklung Tag
 let summetagesanfang = 0;
 for (let i=0; i<anzahl; i++ ) {
     summetagesanfang = summetagesanfang + finanzdaten[i][3] * finanzdaten[i][7];
@@ -146,6 +146,7 @@ if (debuglevel > 0) console.log("Gesamtsumme Tagesanfang: " + summetagesanfang);
 if (debuglevel > 0) console.log("Kursentwicklung Tag Prozent: " + kursentwicklungtagprozent);
 if (debuglevel > 0) console.log(" ");
 
+let kursentwicklungtagbetrag = sum - summetagesanfang;
 
 // Berechnung Kursentwicklung Jahr in Prozent
 let summejahresanfang = 0;
@@ -171,11 +172,11 @@ if (debuglevel > 0) console.log(" ");
 let textschriftartfett = Font.boldSystemFont(9);
 let farbetextoben = Color.gray();
 
-//let kleineueberschrift = Font.italicSystemFont(8);
+let kleineueberschrift = Font.italicSystemFont(8);
 //let tabellenschriftartgleichbreit = new Font("Courier", 14);
-//let farbeueberschrift = Color.gray();
+let farbeueberschrift = Color.gray();
 
-//let grosstextschriftart = Font.boldRoundedSystemFont(21);
+let grosstextschriftart = Font.boldRoundedSystemFont(21);
 
 //let zielzeitspanneschriftart = Font.boldSystemFont(16);
 
@@ -330,15 +331,31 @@ textheaders3z7.textColor = farbetextoben;
 hauptzeilenstack.addSpacer();
 
 // Ausgabe Gesamtsumme
-hauptzeilenstack.addText('Gesamtsumme: ' + runden(sum,2).toFixed(2).toString().replace(".",",") + " €");
+let ueberschriftgesamtsumme = hauptzeilenstack.addText('Gesamtsumme');
+ueberschriftgesamtsumme.font = kleineueberschrift;
+ueberschriftgesamtsumme.textColor = farbeueberschrift;
+hauptzeilenstack.addText(runden(sum,2).toFixed(2).toString().replace(".",",") + " €");
+
 hauptzeilenstack.addSpacer();
 
 // Ausgabe Entwicklung heute
-hauptzeilenstack.addText('Entwicklung durch Kurs heute: ' + runden(kursentwicklungtagprozent,2).toFixed(2).toString().replace(".",",") + " %");
+let ueberschriftentwheute = hauptzeilenstack.addText('Entwicklung durch Kurs heute');
+ueberschriftentwheute.font = kleineueberschrift;
+ueberschriftentwheute.textColor = farbeueberschrift;
+
+if (kursentwicklungtagprozent <= 0) entwicklung = kursentwicklungtagprozent.toFixed(2).replace(".",",") + " % (" + tausenderpunkt(kursentwicklungtagbetrag.toFixed(2).replace(".",",")) + " €)";
+if (kursentwicklungtagprozent > 0) entwicklung = "+" + kursentwicklungtagprozent.toFixed(2).replace(".",",") + " % (" + tausenderpunkt(kursentwicklungtagbetrag.toFixed(2).replace(".",",")) + " €)";                    
+let entwicklungstexttag = hauptzeilenstack.addText(entwicklung);
+entwicklungstexttag.font=grosstextschriftart;
+if (kursentwicklungtagbetrag < 0) entwicklungstexttag.textColor=Color.red();
+
 hauptzeilenstack.addSpacer();
 
 // Ausgabe Entwicklung Jahr
-hauptzeilenstack.addText('Entwicklung durch Kurs aktuelles Jahr: ' + runden(kursentwicklungjahrprozent,2).toFixed(2).toString().replace(".",",") + " %");
+let ueberschriftentwjahr = hauptzeilenstack.addText('Entwicklung durch Kurs aktuelles Jahr');
+ueberschriftentwjahr.font = kleineueberschrift;
+ueberschriftentwjahr.textColor = farbeueberschrift;
+hauptzeilenstack.addText(runden(kursentwicklungjahrprozent,2).toFixed(2).toString().replace(".",",") + " %");
 
 
 //Ausgabe Footer
