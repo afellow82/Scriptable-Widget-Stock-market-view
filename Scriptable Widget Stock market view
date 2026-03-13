@@ -3,13 +3,11 @@
 
 
 // Version
-const version = "0.06";
+const version = "1.00";
 // 13.03.2026
 
 
-// ToDo / Bugs / Ideen:
-// Große Zahlen zentriert
-// Zu alter Datenstand rot
+// ToDo / Bugs / Ideen: <keine>
 
 
 // Debuglevel
@@ -169,7 +167,7 @@ if (debuglevel > 0) console.log(" ");
 let kursentwicklungjahrbetrag = summetheoretisch - summejahresanfang;
 
 
-// Berechnung
+// Berechnung Entwicklung Jahr absolut
 let entwicklungjahrbetrag = sum - summejahresanfang;
 
 
@@ -347,8 +345,12 @@ hauptzeilenstack.addSpacer();
 let ueberschriftgesamtsumme = hauptzeilenstack.addText('Gesamtsumme');
 ueberschriftgesamtsumme.font = kleineueberschrift;
 ueberschriftgesamtsumme.textColor = farbeueberschrift;
-let gesamtsummetext = hauptzeilenstack.addText(tausenderpunkt(runden(sum,2).toFixed(2).toString().replace(".",",")) + " €");
+
+let zentriert1stack = hauptzeilenstack.addStack();
+zentriert1stack.addSpacer();
+let gesamtsummetext = zentriert1stack.addText(tausenderpunkt(runden(sum,2).toFixed(2).toString().replace(".",",")) + " €");
 gesamtsummetext.font=grosstextschriftart;
+zentriert1stack.addSpacer();
 
 hauptzeilenstack.addSpacer();
 
@@ -357,11 +359,14 @@ let ueberschriftentwheute = hauptzeilenstack.addText('Entwicklung durch Kurs heu
 ueberschriftentwheute.font = kleineueberschrift;
 ueberschriftentwheute.textColor = farbeueberschrift;
 
+let zentriert2stack = hauptzeilenstack.addStack();
+zentriert2stack.addSpacer();
 if (kursentwicklungtagprozent <= 0) entwicklung = kursentwicklungtagprozent.toFixed(2).replace(".",",") + " % (" + tausenderpunkt(kursentwicklungtagbetrag.toFixed(2).replace(".",",")) + " €)";
 if (kursentwicklungtagprozent > 0) entwicklung = "+" + kursentwicklungtagprozent.toFixed(2).replace(".",",") + " % (" + tausenderpunkt(kursentwicklungtagbetrag.toFixed(2).replace(".",",")) + " €)";                    
-let entwicklungstexttag = hauptzeilenstack.addText(entwicklung);
+let entwicklungstexttag = zentriert2stack.addText(entwicklung);
 entwicklungstexttag.font=grosstextschriftart;
 if (kursentwicklungtagbetrag < 0) entwicklungstexttag.textColor=Color.red();
+zentriert2stack.addSpacer();
 
 hauptzeilenstack.addSpacer();
 
@@ -370,11 +375,14 @@ let ueberschriftentwjahr = hauptzeilenstack.addText('Entwicklung durch Kurs aktu
 ueberschriftentwjahr.font = kleineueberschrift;
 ueberschriftentwjahr.textColor = farbeueberschrift;
 
+let zentriert3stack = hauptzeilenstack.addStack();
+zentriert3stack.addSpacer();
 if (kursentwicklungjahrprozent <= 0) entwicklung = kursentwicklungjahrprozent.toFixed(2).replace(".",",") + " % (" + tausenderpunkt(kursentwicklungjahrbetrag.toFixed(2).replace(".",",")) + " €)";
 if (kursentwicklungjahrprozent > 0) entwicklung = "+" + kursentwicklungjahrprozent.toFixed(2).replace(".",",") + " % (" + tausenderpunkt(kursentwicklungjahrbetrag.toFixed(2).replace(".",",")) + " €)";                    
-let entwicklungstextjahr = hauptzeilenstack.addText(entwicklung);
+let entwicklungstextjahr = zentriert3stack.addText(entwicklung);
 entwicklungstextjahr.font=grosstextschriftart;
 if (kursentwicklungjahrbetrag < 0) entwicklungstextjahr.textColor=Color.red();
+zentriert3stack.addSpacer();
 
 hauptzeilenstack.addSpacer();
 
@@ -383,11 +391,14 @@ let ueberschriftentwbetragjahr = hauptzeilenstack.addText('Entwicklung aktuelles
 ueberschriftentwbetragjahr.font = kleineueberschrift;
 ueberschriftentwbetragjahr.textColor = farbeueberschrift;
 
+let zentriert4stack = hauptzeilenstack.addStack();
+zentriert4stack.addSpacer();
 if (entwicklungjahrbetrag <= 0) entwicklung = tausenderpunkt(entwicklungjahrbetrag.toFixed(2).replace(".",",")) + " €";
 if (entwicklungjahrbetrag > 0) entwicklung = "+" + tausenderpunkt(entwicklungjahrbetrag.toFixed(2).replace(".",",")) + " €";                    
-let entwicklungstextjahr2 = hauptzeilenstack.addText(entwicklung);
+let entwicklungstextjahr2 = zentriert4stack.addText(entwicklung);
 entwicklungstextjahr2.font=grosstextschriftart;
 if (kursentwicklungjahrbetrag < 0) entwicklungstextjahr2.textColor=Color.red();
+zentriert4stack.addSpacer();
 
 hauptzeilenstack.addSpacer();
 
@@ -450,13 +461,20 @@ if (debuglevel > 1) footerrechtsstack.backgroundColor = new Color('abcd33');
 
 let textzeilestand = footerrechtsstack.addText('Stand Anteile: '+ nullendatum(datumanteile));
 textzeilestand.font=sehrkleinschriftart;
-textzeilestand.textColor=Color.lightGray();
+//roter Text wenn letztes Update vor mehr als 35 Tagen
+let alterdaten = Math.floor((heute.getTime() - datumanteile.getTime())/(1000*60*60*24));
+if (alterdaten > 35){
+    textzeilestand.textColor=Color.red();
+} else {
+    textzeilestand.textColor=Color.lightGray();;
+}
+
 
 versiontext = '[V'+ version + ', '+stundenaktuelltext+':'+minutenaktuelltext +']';
 let textzeileversion = footerrechtsstack.addText(versiontext);
 textzeileversion.font=sehrkleinschriftart;
 textzeileversion.textColor=Color.lightGray();
-
+footerrechtsstack.addSpacer();
 
 // Widget starten
 widget.presentLarge();
