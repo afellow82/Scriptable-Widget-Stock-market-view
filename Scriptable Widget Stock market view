@@ -3,12 +3,11 @@
 
 
 // Version
-const version = "1.02";
+const version = "1.03";
 // 14.03.2026
 
 
 // ToDo / Bugs / Ideen: <keine>
-
 
 // Debuglevel
 let debuglevel = 0;
@@ -173,10 +172,9 @@ let entwicklungjahrbetrag = sum - summejahresanfang;
 
 // Schriftarten
 let textschriftartfett = Font.boldSystemFont(9);
-//let farbetextoben = Color.black();
-let kleineueberschrift = Font.italicSystemFont(8);
+let kleineueberschrift = Font.italicSystemFont(9);
 let farbeueberschrift = Color.gray();
-let grosstextschriftart = Font.boldRoundedSystemFont(26);
+let grosstextschriftart = Font.boldRoundedSystemFont(25);
 let sehrkleinschriftart = Font.regularSystemFont(7);
 
 
@@ -197,7 +195,6 @@ if (debuglevel > 1) headerspalte1stack.backgroundColor = new Color('7456ee');
 for (let i=0; i<anzahl; i++ ) {
     let text = headerspalte1stack.addText(finanzdaten[i][0]);
     text.font=textschriftartfett;
-    //text.textColor = farbetextoben;
 }
 
 headerspaltenstack.addSpacer();
@@ -213,7 +210,6 @@ headers2z1stack.addSpacer();
 let kursheaders2z1 = finanzdaten[0][2].toFixed(3).toString().replace(".",",") + " €";
 let textheaders2z1 = headers2z1stack.addText(kursheaders2z1);
 textheaders2z1.font=textschriftartfett;
-//textheaders2z1.textColor = farbetextoben;
 if (finanzdaten[0][2] > finanzdaten[0][7]) textheaders2z1.textColor = Color.green();
 if (finanzdaten[0][2] < finanzdaten[0][7]) textheaders2z1.textColor = Color.red();
 
@@ -223,7 +219,6 @@ headers2z2stack.addSpacer();
 let kursheaders2z2 = finanzdaten[1][2].toFixed(3).toString().replace(".",",") + " €";
 let textheaders2z2 = headers2z2stack.addText(kursheaders2z2);
 textheaders2z2.font=textschriftartfett;
-//textheaders2z2.textColor = farbetextoben;
 if (finanzdaten[1][2] > finanzdaten[1][7]) textheaders2z2.textColor = Color.green();
 if (finanzdaten[1][2] < finanzdaten[1][7]) textheaders2z2.textColor = Color.red();
 
@@ -233,7 +228,6 @@ headers2z3stack.addSpacer();
 let kursheaders2z3 = finanzdaten[2][2].toFixed(3).toString().replace(".",",") + " €";
 let textheaders2z3 = headers2z3stack.addText(kursheaders2z3);
 textheaders2z3.font=textschriftartfett;
-//textheaders2z3.textColor = farbetextoben;
 if (finanzdaten[2][2] > finanzdaten[2][7]) textheaders2z3.textColor = Color.green();
 if (finanzdaten[2][2] < finanzdaten[2][7]) textheaders2z3.textColor = Color.red();
 
@@ -243,7 +237,6 @@ headers2z4stack.addSpacer();
 let kursheaders2z4 = finanzdaten[3][2].toFixed(3).toString().replace(".",",") + " €";
 let textheaders2z4 = headers2z4stack.addText(kursheaders2z4);
 textheaders2z4.font=textschriftartfett;
-//textheaders2z4.textColor = farbetextoben;
 if (finanzdaten[3][2] > finanzdaten[3][7]) textheaders2z4.textColor = Color.green();
 if (finanzdaten[3][2] < finanzdaten[3][7]) textheaders2z4.textColor = Color.red();
 
@@ -253,7 +246,6 @@ headers2z5stack.addSpacer();
 let kursheaders2z5 = finanzdaten[4][2].toFixed(3).toString().replace(".",",") + " €";
 let textheaders2z5 = headers2z5stack.addText(kursheaders2z5);
 textheaders2z5.font=textschriftartfett;
-//textheaders2z5.textColor = farbetextoben;
 if (finanzdaten[4][2] > finanzdaten[4][7]) textheaders2z5.textColor = Color.green();
 if (finanzdaten[4][2] < finanzdaten[4][7]) textheaders2z5.textColor = Color.red();
 
@@ -263,7 +255,6 @@ headers2z6stack.addSpacer();
 let kursheaders2z6 = finanzdaten[5][2].toFixed(3).toString().replace(".",",") + " €";
 let textheaders2z6 = headers2z6stack.addText(kursheaders2z6);
 textheaders2z6.font=textschriftartfett;
-//textheaders2z6.textColor = farbetextoben;
 if (finanzdaten[5][2] > finanzdaten[5][7]) textheaders2z6.textColor = Color.green();
 if (finanzdaten[5][2] < finanzdaten[5][7]) textheaders2z6.textColor = Color.red();
 
@@ -273,27 +264,85 @@ headers2z7stack.addSpacer();
 let kursheaders2z7 = finanzdaten[6][2].toFixed(3).toString().replace(".",",") + " €";
 let textheaders2z7 = headers2z7stack.addText(kursheaders2z7);
 textheaders2z7.font=textschriftartfett;
-//textheaders2z7.textColor = farbetextoben;
 if (finanzdaten[6][2] > finanzdaten[6][7]) textheaders2z7.textColor = Color.green();
 if (finanzdaten[6][2] < finanzdaten[6][7]) textheaders2z7.textColor = Color.red();
 
 // Ausgabe Betrag Tagesentwicklung (Spalte 2a)
 let headerspalte2astack = headerspaltenstack.addStack();
 headerspalte2astack.layoutVertically();
-//headerspalte4stack.size = new Size(120,0);
 if (debuglevel > 1) headerspalte2astack.backgroundColor = new Color('761234');
 
 let betragtag = 0;
-for (let i=0; i < anzahl; i++ ) {
-    if (finanzdaten[i][2]-finanzdaten[i][7] > 0) {
-        betragtag = " (+" + (finanzdaten[i][2]-finanzdaten[i][7]).toFixed(2).toString().replace(".",",") + " €)";
-    } else {
-        betragtag = " (" + (finanzdaten[i][2]-finanzdaten[i][7]).toFixed(2).toString().replace(".",",") + " €)";
-    }
-    let textbetragtag = headerspalte2astack.addText(betragtag);
-    textbetragtag.font = textschriftartfett;
-    //textbetragtag.textColor = farbetextoben;
+
+if (finanzdaten[0][2] - finanzdaten[0][7] > 0) {
+    betragtag = " (+" + (finanzdaten[0][2]-finanzdaten[0][7]).toFixed(2).toString().replace(".",",") + " €)";
+} else {
+    betragtag = " (" + (finanzdaten[0][2]-finanzdaten[0][7]).toFixed(2).toString().replace(".",",") + " €)";
 }
+let textbetragtags2az1 = headerspalte2astack.addText(betragtag);
+textbetragtags2az1.font = textschriftartfett;
+if (finanzdaten[0][2] > finanzdaten[0][7]) textbetragtags2az1.textColor = Color.green();
+if (finanzdaten[0][2] < finanzdaten[0][7]) textbetragtags2az1.textColor = Color.red();
+
+if (finanzdaten[1][2] - finanzdaten[1][7] > 0) {
+    betragtag = " (+" + (finanzdaten[1][2]-finanzdaten[1][7]).toFixed(2).toString().replace(".",",") + " €)";
+} else {
+    betragtag = " (" + (finanzdaten[1][2]-finanzdaten[1][7]).toFixed(2).toString().replace(".",",") + " €)";
+}
+let textbetragtags2az2 = headerspalte2astack.addText(betragtag);
+textbetragtags2az2.font = textschriftartfett;
+if (finanzdaten[1][2] > finanzdaten[1][7]) textbetragtags2az2.textColor = Color.green();
+if (finanzdaten[1][2] < finanzdaten[1][7]) textbetragtags2az2.textColor = Color.red();
+
+if (finanzdaten[2][2] - finanzdaten[2][7] > 0) {
+    betragtag = " (+" + (finanzdaten[2][2]-finanzdaten[2][7]).toFixed(2).toString().replace(".",",") + " €)";
+} else {
+    betragtag = " (" + (finanzdaten[2][2]-finanzdaten[2][7]).toFixed(2).toString().replace(".",",") + " €)";
+}
+let textbetragtags2az3 = headerspalte2astack.addText(betragtag);
+textbetragtags2az3.font = textschriftartfett;
+if (finanzdaten[2][2] > finanzdaten[2][7]) textbetragtags2az3.textColor = Color.green();
+if (finanzdaten[2][2] < finanzdaten[2][7]) textbetragtags2az3.textColor = Color.red();
+
+if (finanzdaten[3][2] - finanzdaten[3][7] > 0) {
+    betragtag = " (+" + (finanzdaten[3][2]-finanzdaten[3][7]).toFixed(2).toString().replace(".",",") + " €)";
+} else {
+    betragtag = " (" + (finanzdaten[3][2]-finanzdaten[3][7]).toFixed(2).toString().replace(".",",") + " €)";
+}
+let textbetragtags2az4 = headerspalte2astack.addText(betragtag);
+textbetragtags2az4.font = textschriftartfett;
+if (finanzdaten[3][2] > finanzdaten[3][7]) textbetragtags2az4.textColor = Color.green();
+if (finanzdaten[3][2] < finanzdaten[3][7]) textbetragtags2az4.textColor = Color.red();
+
+if (finanzdaten[4][2] - finanzdaten[4][7] > 0) {
+    betragtag = " (+" + (finanzdaten[4][2]-finanzdaten[4][7]).toFixed(2).toString().replace(".",",") + " €)";
+} else {
+    betragtag = " (" + (finanzdaten[4][2]-finanzdaten[4][7]).toFixed(2).toString().replace(".",",") + " €)";
+}
+let textbetragtags2az5 = headerspalte2astack.addText(betragtag);
+textbetragtags2az5.font = textschriftartfett;
+if (finanzdaten[4][2] > finanzdaten[4][7]) textbetragtags2az5.textColor = Color.green();
+if (finanzdaten[4][2] < finanzdaten[4][7]) textbetragtags2az5.textColor = Color.red();
+
+if (finanzdaten[5][2] - finanzdaten[5][7] > 0) {
+    betragtag = " (+" + (finanzdaten[5][2]-finanzdaten[5][7]).toFixed(2).toString().replace(".",",") + " €)";
+} else {
+    betragtag = " (" + (finanzdaten[5][2]-finanzdaten[5][7]).toFixed(2).toString().replace(".",",") + " €)";
+}
+let textbetragtags2az6 = headerspalte2astack.addText(betragtag);
+textbetragtags2az6.font = textschriftartfett;
+if (finanzdaten[5][2] > finanzdaten[5][7]) textbetragtags2az6.textColor = Color.green();
+if (finanzdaten[5][2] < finanzdaten[5][7]) textbetragtags2az6.textColor = Color.red();
+
+if (finanzdaten[6][2] - finanzdaten[6][7] > 0) {
+    betragtag = " (+" + (finanzdaten[6][2]-finanzdaten[6][7]).toFixed(2).toString().replace(".",",") + " €)";
+} else {
+    betragtag = " (" + (finanzdaten[6][2]-finanzdaten[6][7]).toFixed(2).toString().replace(".",",") + " €)";
+}
+let textbetragtags2az7 = headerspalte2astack.addText(betragtag);
+textbetragtags2az7.font = textschriftartfett;
+if (finanzdaten[6][2] > finanzdaten[6][7]) textbetragtags2az7.textColor = Color.green();
+if (finanzdaten[6][2] < finanzdaten[6][7]) textbetragtags2az7.textColor = Color.red();
 
 headerspaltenstack.addSpacer();
 
@@ -309,7 +358,6 @@ headers3z1stack.addSpacer();
 let gesamtwertheaders3z1 = tausenderpunkt(finanzdaten[0][4].toFixed(2).toString().replace(".",",")) + " €";
 let textheaders3z1 = headers3z1stack.addText(gesamtwertheaders3z1);
 textheaders3z1.font=textschriftartfett;
-//textheaders3z1.textColor = farbetextoben;
   
 let headers3z2stack = headerspalte3stack.addStack();
 headers3z2stack.layoutHorizontally();
@@ -317,7 +365,6 @@ headers3z2stack.addSpacer();
 let gesamtwertheaders3z2 = tausenderpunkt(finanzdaten[1][4].toFixed(2).toString().replace(".",",")) + " €";
 let textheaders3z2 = headers3z2stack.addText(gesamtwertheaders3z2);
 textheaders3z2.font=textschriftartfett;
-//textheaders3z2.textColor = farbetextoben;
       
 let headers3z3stack = headerspalte3stack.addStack();
 headers3z3stack.layoutHorizontally();
@@ -325,7 +372,6 @@ headers3z3stack.addSpacer();
 let gesamtwertheaders3z3 = tausenderpunkt(finanzdaten[2][4].toFixed(2).toString().replace(".",",")) + " €";
 let textheaders3z3 = headers3z3stack.addText(gesamtwertheaders3z3);
 textheaders3z3.font=textschriftartfett;
-//textheaders3z3.textColor = farbetextoben;      
           
 let headers3z4stack = headerspalte3stack.addStack();
 headers3z4stack.layoutHorizontally();
@@ -333,7 +379,6 @@ headers3z4stack.addSpacer();
 let gesamtwertheaders3z4 = tausenderpunkt(finanzdaten[3][4].toFixed(2).toString().replace(".",",")) + " €";
 let textheaders3z4 = headers3z4stack.addText(gesamtwertheaders3z4);
 textheaders3z4.font=textschriftartfett;
-//textheaders3z4.textColor = farbetextoben;     
             
 let headers3z5stack = headerspalte3stack.addStack();
 headers3z5stack.layoutHorizontally();
@@ -341,7 +386,6 @@ headers3z5stack.addSpacer();
 let gesamtwertheaders3z5 = tausenderpunkt(finanzdaten[4][4].toFixed(2).toString().replace(".",",")) + " €";
 let textheaders3z5 = headers3z5stack.addText(gesamtwertheaders3z5);
 textheaders3z5.font=textschriftartfett;
-//textheaders3z5.textColor = farbetextoben;          
                     
 let headers3z6stack = headerspalte3stack.addStack();
 headers3z6stack.layoutHorizontally();
@@ -349,7 +393,6 @@ headers3z6stack.addSpacer();
 let gesamtwertheaders3z6 = tausenderpunkt(finanzdaten[5][4].toFixed(2).toString().replace(".",",")) + " €";
 let textheaders3z6 = headers3z6stack.addText(gesamtwertheaders3z6);
 textheaders3z6.font=textschriftartfett;
-//textheaders3z6.textColor = farbetextoben;   
                                             
 let headers3z7stack = headerspalte3stack.addStack();
 headers3z7stack.layoutHorizontally();
@@ -357,7 +400,6 @@ headers3z7stack.addSpacer();
 let gesamtwertheaders3z7 = tausenderpunkt(finanzdaten[6][4].toFixed(2).toString().replace(".",",")) + " €";
 let textheaders3z7 = headers3z7stack.addText(gesamtwertheaders3z7);
 textheaders3z7.font=textschriftartfett;
-//textheaders3z7.textColor = farbetextoben;        
 
 hauptzeilenstack.addSpacer();
 
@@ -444,7 +486,7 @@ textfooterlinks.font=sehrkleinschriftart;
 textfooterlinks.textColor=Color.lightGray();
 
 for (let i=0; i < teilung; i++ ) {
-    let timestamp = uhrzeit(finanzdaten[i][6]);
+    let timestamp = " " + (i+1) + ": " + uhrzeit(finanzdaten[i][6]);
     let text = footerlinksstack.addText(timestamp);
     text.font=sehrkleinschriftart;
     text.textColor=Color.lightGray();
@@ -460,7 +502,7 @@ textfootermitte.font=sehrkleinschriftart;
 textfootermitte.textColor=Color.lightGray();
 
 for (let i=teilung; i < anzahl; i++ ) {
-    let timestamp = uhrzeit(finanzdaten[i][6]);
+    let timestamp = "  " + (i+1) + ": " + uhrzeit(finanzdaten[i][6]);
     let text = footermittestack.addText(timestamp);
     text.font=sehrkleinschriftart;
     text.textColor=Color.lightGray();
