@@ -3,7 +3,7 @@
 
 
 // Version
-const version = "1.07";
+const version = "1.08";
 // 17.03.2026
 
 
@@ -23,27 +23,18 @@ const datumanteile = new Date("03/02/2026");
 // Bestandteile array:
 // #0 - Name (selbst vergeben)
 // #1 - ISIN
-// #2 - Kurs (initialisiert, wird überschriebn)
+// #2 - Kurs (initialisiert, wird überschrieben)
 // #3 - Anteile im Besitz (händisch eingetragen)
 // #4 - Gesamtwert (initialisiert, wird überschrieben)
 // #5 - Vollständiger Name (initialisiert, wird überschrieben)
 // #6 - Timestamp Kursdaten
 // #7 - Startkurs des Tages (initialisiert, wird überschrieben)
-// #8 - ID Consorsbank
+// #8 - ID Consorsbank (initialisiert, wird überschrieben)
 // #9 - Anzahl Aktien Jahresanfang (händisch eingetragen, Stand: 01.01.2025)
 // #10 - Kurs Jahresanfang (händisch eingetragen, Stand: 01.01.2025)
 // #11 - Historischer Gesamtwert (initialisiert, wird überschrieben)
 const anzahl = 7;
 const finanzdaten = [];
-/*
-finanzdaten[0] = ["ETF Core MSCI World","IE00B4L5Y983",0.00,500.084082,0.00,"","",0.00,"_109183133",500.084082,111.74,0.00];
-finanzdaten[1] = ["ETF MSCI World SRI","IE00BYX2JD69",0.00,3990.067096,0.00,"","",0.00,"_242889139",3792.520514,12.19,0.00];
-finanzdaten[2] = ["Aktie Allianz","DE0008404005",0.00,91.862,0.00,"","",0.00,"_1937897",91.862,390.50,0.00];
-finanzdaten[3] = ["ETF AI Infrastructure","IE000X59ZHE2",0.00,476.198976,0.00,"","",0.00,"_486567379",476.198976,6.19,0.00];
-finanzdaten[4] = ["Fonds Allianz US Equity","LU0256843979",0.00,5.048,0.00,"","",0.00,"_273709592",4.873,457.889,0.00];
-finanzdaten[5] = ["Aktie Panasonic","JP3866800000",0.00,26,0.00,"","",0.00,"_79784082",26,10.27,0.00];
-finanzdaten[6] = ["Aktie First Graphene","AU000000FGR3",0.00,250,0.00,"","",0.00,"_162696708",250,0.05,0.00];
-*/
 finanzdaten[0] = ["ETF Core MSCI World","IE00B4L5Y983",0.00,500.084082,0.00,"","",0.00,"_000000000",500.084082,111.74,0.00];
 finanzdaten[1] = ["ETF MSCI World SRI","IE00BYX2JD69",0.00,3990.067096,0.00,"","",0.00,"_000000000",3792.520514,12.19,0.00];
 finanzdaten[2] = ["Aktie Allianz","DE0008404005",0.00,91.862,0.00,"","",0.00,"_000000000",91.862,390.50,0.00];
