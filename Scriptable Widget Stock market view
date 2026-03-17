@@ -3,7 +3,7 @@
 
 
 // Version
-const version = "1.08";
+const version = "1.09";
 // 17.03.2026
 
 
@@ -50,12 +50,14 @@ let heute = new Date();
 
 
 // Namen, Kurse und Timestamps von Lang & Schwarz (@_LUSG) abrufen
+if (debuglevel > 0) console.log("Abruf Finanzdaten für Lang und Schwarz (@_LUSG)");
 for (let i=0; i<anzahl; i++ ) {
     let isinUrl = "https://www.consorsbank.de/web-financialinfo-service/api/marketdata/stocks?id="+finanzdaten[i][1]+"&field=BasicV1&field=ExchangesV2";
     let isinData = await new Request(isinUrl).loadJSON();
-    if (debuglevel > 0) console.log(isinUrl);
     finanzdaten[i][5] = isinData[0].BasicV1.NAME_SECURITY;
+    if (debuglevel > 0) console.log("-------------------");
     if (debuglevel > 0) console.log(finanzdaten[i][5]);
+    if (debuglevel > 0) console.log(isinUrl);
     for (let key in isinData[0].ExchangesV2) {
         if (isinData[0].ExchangesV2[key].CONSORS_EXCHANGE_CODE == "@_LUSG") {
             finanzdaten[i][2] = isinData[0].ExchangesV2[key].PRICE;
@@ -73,7 +75,7 @@ if (debuglevel > 0) console.log(" ");
 // WENN nicht gefunden DANN Namen, Kurse und Timestamps von gettex (_TRO) abrufen
 for (let i=0; i<anzahl; i++ ) {
     if (finanzdaten[i][2] == 0.00) {
-        if (debuglevel > 0) console.log("FEHLER Kein aktueller Kurs für " + finanzdaten[i][5]);
+        if (debuglevel > 0) console.log("FEHLER bei " + finanzdaten[i][5] + ". Nicht bei @_LUSG geführt. Gettex (_TRO) wird als Alternative geprüft.");
         let isinUrl = "https://www.consorsbank.de/web-financialinfo-service/api/marketdata/stocks?id="+finanzdaten[i][1]+"&field=BasicV1&field=ExchangesV2";
         let isinData = await new Request(isinUrl).loadJSON();
         if (debuglevel > 0) console.log(isinUrl);
