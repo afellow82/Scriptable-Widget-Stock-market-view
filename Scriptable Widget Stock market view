@@ -3,14 +3,14 @@
 
 
 // Version
-const version = "1.06";
+const version = "1.07";
 // 17.03.2026
 
 
 // ToDo / Bugs / Ideen: <keine>
 
 // Debuglevel
-let debuglevel = 0;
+let debuglevel = 1;
 // 0 - keine Analyse
 // 1 - Analyse Berechnungswerte
 // 2 - Analyse Berechnungswerte und Einfärben Stacks
@@ -35,13 +35,22 @@ const datumanteile = new Date("03/02/2026");
 // #11 - Historischer Gesamtwert (initialisiert, wird überschrieben)
 const anzahl = 7;
 const finanzdaten = [];
+/*
 finanzdaten[0] = ["ETF Core MSCI World","IE00B4L5Y983",0.00,500.084082,0.00,"","",0.00,"_109183133",500.084082,111.74,0.00];
 finanzdaten[1] = ["ETF MSCI World SRI","IE00BYX2JD69",0.00,3990.067096,0.00,"","",0.00,"_242889139",3792.520514,12.19,0.00];
 finanzdaten[2] = ["Aktie Allianz","DE0008404005",0.00,91.862,0.00,"","",0.00,"_1937897",91.862,390.50,0.00];
-finanzdaten[3] = ["ETF AI Infrastructure","IE000X59ZHE2",0.00,476.198976,0.00,"","",0.00,"_486572892",476.198976,6.19,0.00];
-finanzdaten[4] = ["Fonds Allianz US Equity","LU0256843979",0.00,5.048,0.00,"","",0.00,"_34698633",4.873,457.889,0.00];
-finanzdaten[5] = ["Aktie Panasonic","JP3866800000",0.00,26,0.00,"","",0.00,"_1547506",26,10.27,0.00];
-finanzdaten[6] = ["Aktie First Graphene","AU000000FGR3",0.00,250,0.00,"","",0.00,"_148799559",250,0.05,0.00];
+finanzdaten[3] = ["ETF AI Infrastructure","IE000X59ZHE2",0.00,476.198976,0.00,"","",0.00,"_486567379",476.198976,6.19,0.00];
+finanzdaten[4] = ["Fonds Allianz US Equity","LU0256843979",0.00,5.048,0.00,"","",0.00,"_273709592",4.873,457.889,0.00];
+finanzdaten[5] = ["Aktie Panasonic","JP3866800000",0.00,26,0.00,"","",0.00,"_79784082",26,10.27,0.00];
+finanzdaten[6] = ["Aktie First Graphene","AU000000FGR3",0.00,250,0.00,"","",0.00,"_162696708",250,0.05,0.00];
+*/
+finanzdaten[0] = ["ETF Core MSCI World","IE00B4L5Y983",0.00,500.084082,0.00,"","",0.00,"_000000000",500.084082,111.74,0.00];
+finanzdaten[1] = ["ETF MSCI World SRI","IE00BYX2JD69",0.00,3990.067096,0.00,"","",0.00,"_000000000",3792.520514,12.19,0.00];
+finanzdaten[2] = ["Aktie Allianz","DE0008404005",0.00,91.862,0.00,"","",0.00,"_000000000",91.862,390.50,0.00];
+finanzdaten[3] = ["ETF AI Infrastructure","IE000X59ZHE2",0.00,476.198976,0.00,"","",0.00,"_000000000",476.198976,6.19,0.00];
+finanzdaten[4] = ["Fonds Allianz US Equity","LU0256843979",0.00,5.048,0.00,"","",0.00,"_000000000",4.873,457.889,0.00];
+finanzdaten[5] = ["Aktie Panasonic","JP3866800000",0.00,26,0.00,"","",0.00,"_000000000",26,10.27,0.00];
+finanzdaten[6] = ["Aktie First Graphene","AU000000FGR3",0.00,250,0.00,"","",0.00,"_000000000",250,0.05,0.00];
 
 // Widget initialisieren
 let widget = new ListWidget();
@@ -62,6 +71,8 @@ for (let i=0; i<anzahl; i++ ) {
             if (debuglevel > 0) console.log("Aktueller Kurs: " + finanzdaten[i][2]);
             finanzdaten[i][6] = isinData[0].ExchangesV2[key].DATETIME_PRICE;
             if (debuglevel > 0) console.log("Zeit Kursdaten: " + finanzdaten[i][6]);
+            finanzdaten[i][8] = isinData[0].ExchangesV2[key].CONSORS_ID;
+            if (debuglevel > 0) console.log("ConsorsID: " + finanzdaten[i][8]);
         }
     }
 }
@@ -83,6 +94,8 @@ for (let i=0; i<anzahl; i++ ) {
                 if (debuglevel > 0) console.log("Aktueller Kurs: " + finanzdaten[i][2]);
                 finanzdaten[i][6] = isinData[0].ExchangesV2[key].DATETIME_PRICE;
                 if (debuglevel > 0) console.log("Zeit Kursdaten: " + finanzdaten[i][6]);
+                finanzdaten[i][8] = isinData[0].ExchangesV2[key].CONSORS_ID;
+                if (debuglevel > 0) console.log("ConsorsID: " + finanzdaten[i][8]);
             } 
         }
     }
@@ -352,9 +365,9 @@ if (debuglevel > 0) console.log("Kursveränderung relativ: " + (((finanzdaten[4]
 if (finanzdaten[5][2] - finanzdaten[5][7] == 0) {
     entwtag = " ";
 } else if (finanzdaten[5][2] - finanzdaten[5][7] > 0) {
-    entwtag = " (+" + runden((((finanzdaten[5][2]-finanzdaten[4][7])/finanzdaten[5][7]) * 100),2).toFixed(2).replace(".",",") + " %)";
+    entwtag = " (+" + runden((((finanzdaten[5][2]-finanzdaten[5][7])/finanzdaten[5][7]) * 100),2).toFixed(2).replace(".",",") + " %)";
 } else {
-    entwtag = " (" + runden((((finanzdaten[5][2]-finanzdaten[4][7])/finanzdaten[5][7]) * 100),2).toFixed(2).replace(".",",") + " %)";
+    entwtag = " (" + runden((((finanzdaten[5][2]-finanzdaten[5][7])/finanzdaten[5][7]) * 100),2).toFixed(2).replace(".",",") + " %)";
 }
 let textentwtags2az6 = headerspalte2astack.addText(entwtag);
 textentwtags2az6.font = textschriftartfett;
@@ -367,9 +380,9 @@ if (debuglevel > 0) console.log("Kursveränderung relativ: " + (((finanzdaten[5]
 if (finanzdaten[6][2] - finanzdaten[6][7] == 0) {
     entwtag = " ";
 } else if (finanzdaten[6][2] - finanzdaten[6][7] > 0) {
-    entwtag = " (+" + runden((((finanzdaten[6][2]-finanzdaten[4][7])/finanzdaten[6][7]) * 100),2).toFixed(2).replace(".",",") + " %)";
+    entwtag = " (+" + runden((((finanzdaten[6][2]-finanzdaten[6][7])/finanzdaten[6][7]) * 100),2).toFixed(2).replace(".",",") + " %)";
 } else {
-    entwtag = " (" + runden((((finanzdaten[6][2]-finanzdaten[4][7])/finanzdaten[6][7]) * 100),2).toFixed(2).replace(".",",") + " %)";
+    entwtag = " (" + runden((((finanzdaten[6][2]-finanzdaten[6][7])/finanzdaten[6][7]) * 100),2).toFixed(2).replace(".",",") + " %)";
 }
 let textentwtags2az7 = headerspalte2astack.addText(entwtag);
 textentwtags2az7.font = textschriftartfett;
