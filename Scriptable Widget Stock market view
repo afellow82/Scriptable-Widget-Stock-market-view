@@ -3,8 +3,8 @@
 
 
 // Version
-const version = "1.03";
-// 14.03.2026
+const version = "1.04";
+// 17.03.2026
 
 
 // ToDo / Bugs / Ideen: <keine>
@@ -460,7 +460,7 @@ if (entwicklungjahrbetrag <= 0) entwicklung = tausenderpunkt(entwicklungjahrbetr
 if (entwicklungjahrbetrag > 0) entwicklung = "+" + tausenderpunkt(entwicklungjahrbetrag.toFixed(2).replace(".",",")) + " €";                    
 let entwicklungstextjahr2 = zentriert4stack.addText(entwicklung);
 entwicklungstextjahr2.font=grosstextschriftart;
-if (kursentwicklungjahrbetrag < 0) entwicklungstextjahr2.textColor=Color.red();
+if (entwicklungjahrbetrag < 0) entwicklungstextjahr2.textColor=Color.red();
 zentriert4stack.addSpacer();
 
 hauptzeilenstack.addSpacer();
