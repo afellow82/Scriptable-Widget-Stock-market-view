@@ -3,7 +3,7 @@
 
 
 // Version
-const version = "1.04";
+const version = "1.05";
 // 17.03.2026
 
 
@@ -272,78 +272,114 @@ let headerspalte2astack = headerspaltenstack.addStack();
 headerspalte2astack.layoutVertically();
 if (debuglevel > 1) headerspalte2astack.backgroundColor = new Color('761234');
 
-let betragtag = 0;
+let entwtag =0;
 
-if (finanzdaten[0][2] - finanzdaten[0][7] > 0) {
-    betragtag = " (+" + (finanzdaten[0][2]-finanzdaten[0][7]).toFixed(2).toString().replace(".",",") + " €)";
+if (finanzdaten[0][2] - finanzdaten[0][7] == 0) {
+    entwtag = " ";
+} else if (finanzdaten[0][2] - finanzdaten[0][7] > 0) {
+    entwtag = " (+" + (((finanzdaten[0][2]-finanzdaten[0][7])/finanzdaten[0][7]) * 100).toFixed(2).toString().replace(".",",") + " %)";
 } else {
-    betragtag = " (" + (finanzdaten[0][2]-finanzdaten[0][7]).toFixed(2).toString().replace(".",",") + " €)";
+    entwtag = " (" + (((finanzdaten[0][2]-finanzdaten[0][7])/finanzdaten[0][7]) * 100).toFixed(2).toString().replace(".",",") + " %)";
 }
-let textbetragtags2az1 = headerspalte2astack.addText(betragtag);
-textbetragtags2az1.font = textschriftartfett;
-if (finanzdaten[0][2] > finanzdaten[0][7]) textbetragtags2az1.textColor = Color.green();
-if (finanzdaten[0][2] < finanzdaten[0][7]) textbetragtags2az1.textColor = Color.red();
+let textentwtags2az1 = headerspalte2astack.addText(entwtag);
+textentwtags2az1.font = textschriftartfett;
+if (finanzdaten[0][2] > finanzdaten[0][7]) textentwtags2az1.textColor = Color.green();
+if (finanzdaten[0][2] < finanzdaten[0][7]) textentwtags2az1.textColor = Color.red();
+if (debuglevel > 0) console.log("Kurs Tagesbeginn: " + finanzdaten[0][7]);
+if (debuglevel > 0) console.log("Kursveränderung absolut: " + (finanzdaten[0][2] - finanzdaten[0][7]));
+if (debuglevel > 0) console.log("Kursveränderung relativ: " + (((finanzdaten[0][2] - finanzdaten[0][7]) * 100) / finanzdaten[0][7]));
 
-if (finanzdaten[1][2] - finanzdaten[1][7] > 0) {
-    betragtag = " (+" + (finanzdaten[1][2]-finanzdaten[1][7]).toFixed(2).toString().replace(".",",") + " €)";
+if (finanzdaten[1][2] - finanzdaten[1][7] == 0) {
+    entwtag = " ";
+} else if (finanzdaten[1][2] - finanzdaten[1][7] > 0) {
+    entwtag = " (+" + (((finanzdaten[1][2]-finanzdaten[1][7])/finanzdaten[1][7]) * 100).toFixed(2).toString().replace(".",",") + " %)";
 } else {
-    betragtag = " (" + (finanzdaten[1][2]-finanzdaten[1][7]).toFixed(2).toString().replace(".",",") + " €)";
+    entwtag = " (" + (((finanzdaten[1][2]-finanzdaten[1][7])/finanzdaten[1][7]) * 100).toFixed(2).toString().replace(".",",") + " %)";
 }
-let textbetragtags2az2 = headerspalte2astack.addText(betragtag);
-textbetragtags2az2.font = textschriftartfett;
-if (finanzdaten[1][2] > finanzdaten[1][7]) textbetragtags2az2.textColor = Color.green();
-if (finanzdaten[1][2] < finanzdaten[1][7]) textbetragtags2az2.textColor = Color.red();
+let textentwtags2az2 = headerspalte2astack.addText(entwtag);
+textentwtags2az2.font = textschriftartfett;
+if (finanzdaten[1][2] > finanzdaten[1][7]) textentwtags2az2.textColor = Color.green();
+if (finanzdaten[1][2] < finanzdaten[1][7]) textentwtags2az2.textColor = Color.red();
+if (debuglevel > 0) console.log("Kurs Tagesbeginn: " + finanzdaten[1][7]);
+if (debuglevel > 0) console.log("Kursveränderung absolut: " + (finanzdaten[1][2] - finanzdaten[1][7]));
+if (debuglevel > 0) console.log("Kursveränderung relativ: " + (((finanzdaten[1][2] - finanzdaten[1][7]) * 100) / finanzdaten[1][7]));
 
-if (finanzdaten[2][2] - finanzdaten[2][7] > 0) {
-    betragtag = " (+" + (finanzdaten[2][2]-finanzdaten[2][7]).toFixed(2).toString().replace(".",",") + " €)";
+if (finanzdaten[2][2] - finanzdaten[2][7] == 0) {
+    entwtag = " ";
+} else if (finanzdaten[2][2] - finanzdaten[2][7] > 0) {
+    entwtag = " (+" + (((finanzdaten[2][2]-finanzdaten[2][7])/finanzdaten[2][7]) * 100).toFixed(2).toString().replace(".",",") + " %)";
 } else {
-    betragtag = " (" + (finanzdaten[2][2]-finanzdaten[2][7]).toFixed(2).toString().replace(".",",") + " €)";
+    entwtag = " (" + (((finanzdaten[2][2]-finanzdaten[2][7])/finanzdaten[2][7]) * 100).toFixed(2).toString().replace(".",",") + " %)";
 }
-let textbetragtags2az3 = headerspalte2astack.addText(betragtag);
-textbetragtags2az3.font = textschriftartfett;
-if (finanzdaten[2][2] > finanzdaten[2][7]) textbetragtags2az3.textColor = Color.green();
-if (finanzdaten[2][2] < finanzdaten[2][7]) textbetragtags2az3.textColor = Color.red();
+let textentwtags2az3 = headerspalte2astack.addText(entwtag);
+textentwtags2az3.font = textschriftartfett;
+if (finanzdaten[2][2] > finanzdaten[2][7]) textentwtags2az3.textColor = Color.green();
+if (finanzdaten[2][2] < finanzdaten[2][7]) textentwtags2az3.textColor = Color.red();
+if (debuglevel > 0) console.log("Kurs Tagesbeginn: " + finanzdaten[2][7]);
+if (debuglevel > 0) console.log("Kursveränderung absolut: " + (finanzdaten[2][2] - finanzdaten[2][7]));
+if (debuglevel > 0) console.log("Kursveränderung relativ: " + (((finanzdaten[2][2] - finanzdaten[2][7]) * 100) / finanzdaten[2][7]));
 
-if (finanzdaten[3][2] - finanzdaten[3][7] > 0) {
-    betragtag = " (+" + (finanzdaten[3][2]-finanzdaten[3][7]).toFixed(2).toString().replace(".",",") + " €)";
+if (finanzdaten[3][2] - finanzdaten[3][7] == 0) {
+    entwtag = " ";
+} else if (finanzdaten[3][2] - finanzdaten[3][7] > 0) {
+    entwtag = " (+" + (((finanzdaten[3][2]-finanzdaten[3][7])/finanzdaten[3][7]) * 100).toFixed(2).toString().replace(".",",") + " %)";
 } else {
-    betragtag = " (" + (finanzdaten[3][2]-finanzdaten[3][7]).toFixed(2).toString().replace(".",",") + " €)";
+    entwtag = " (" + (((finanzdaten[3][2]-finanzdaten[3][7])/finanzdaten[3][7]) * 100).toFixed(2).toString().replace(".",",") + " %)";
 }
-let textbetragtags2az4 = headerspalte2astack.addText(betragtag);
-textbetragtags2az4.font = textschriftartfett;
-if (finanzdaten[3][2] > finanzdaten[3][7]) textbetragtags2az4.textColor = Color.green();
-if (finanzdaten[3][2] < finanzdaten[3][7]) textbetragtags2az4.textColor = Color.red();
+let textentwtags2az4 = headerspalte2astack.addText(entwtag);
+textentwtags2az4.font = textschriftartfett;
+if (finanzdaten[3][2] > finanzdaten[3][7]) textentwtags2az4.textColor = Color.green();
+if (finanzdaten[3][2] < finanzdaten[3][7]) textentwtags2az4.textColor = Color.red();
+if (debuglevel > 0) console.log("Kurs Tagesbeginn: " + finanzdaten[3][7]);
+if (debuglevel > 0) console.log("Kursveränderung absolut: " + (finanzdaten[3][2] - finanzdaten[3][7]));
+if (debuglevel > 0) console.log("Kursveränderung relativ: " + (((finanzdaten[3][2] - finanzdaten[3][7]) * 100) / finanzdaten[3][7]));
 
-if (finanzdaten[4][2] - finanzdaten[4][7] > 0) {
-    betragtag = " (+" + (finanzdaten[4][2]-finanzdaten[4][7]).toFixed(2).toString().replace(".",",") + " €)";
+if (finanzdaten[4][2] - finanzdaten[4][7] == 0) {
+    entwtag = " ";
+} else if (finanzdaten[4][2] - finanzdaten[4][7] > 0) {
+    entwtag = " (+" + (((finanzdaten[4][2]-finanzdaten[4][7])/finanzdaten[4][7]) * 100).toFixed(2).toString().replace(".",",") + " %)";
 } else {
-    betragtag = " (" + (finanzdaten[4][2]-finanzdaten[4][7]).toFixed(2).toString().replace(".",",") + " €)";
+    entwtag = " (" + (((finanzdaten[4][2]-finanzdaten[4][7])/finanzdaten[4][7]) * 100).toFixed(2).toString().replace(".",",") + " %)";
 }
-let textbetragtags2az5 = headerspalte2astack.addText(betragtag);
-textbetragtags2az5.font = textschriftartfett;
-if (finanzdaten[4][2] > finanzdaten[4][7]) textbetragtags2az5.textColor = Color.green();
-if (finanzdaten[4][2] < finanzdaten[4][7]) textbetragtags2az5.textColor = Color.red();
+let textentwtags2az5 = headerspalte2astack.addText(entwtag);
+textentwtags2az5.font = textschriftartfett;
+if (finanzdaten[4][2] > finanzdaten[4][7]) textentwtags2az5.textColor = Color.green();
+if (finanzdaten[4][2] < finanzdaten[4][7]) textentwtags2az5.textColor = Color.red();
+if (debuglevel > 0) console.log("Kurs Tagesbeginn: " + finanzdaten[4][7]);
+if (debuglevel > 0) console.log("Kursveränderung absolut: " + (finanzdaten[4][2] - finanzdaten[4][7]));
+if (debuglevel > 0) console.log("Kursveränderung relativ: " + (((finanzdaten[4][2] - finanzdaten[4][7]) * 100) / finanzdaten[4][7]));
 
-if (finanzdaten[5][2] - finanzdaten[5][7] > 0) {
-    betragtag = " (+" + (finanzdaten[5][2]-finanzdaten[5][7]).toFixed(2).toString().replace(".",",") + " €)";
+if (finanzdaten[5][2] - finanzdaten[5][7] == 0) {
+    entwtag = " ";
+} else if (finanzdaten[5][2] - finanzdaten[5][7] > 0) {
+    entwtag = " (+" + (((finanzdaten[5][2]-finanzdaten[4][7])/finanzdaten[5][7]) * 100).toFixed(2).toString().replace(".",",") + " %)";
 } else {
-    betragtag = " (" + (finanzdaten[5][2]-finanzdaten[5][7]).toFixed(2).toString().replace(".",",") + " €)";
+    entwtag = " (" + (((finanzdaten[5][2]-finanzdaten[4][7])/finanzdaten[5][7]) * 100).toFixed(2).toString().replace(".",",") + " %)";
 }
-let textbetragtags2az6 = headerspalte2astack.addText(betragtag);
-textbetragtags2az6.font = textschriftartfett;
-if (finanzdaten[5][2] > finanzdaten[5][7]) textbetragtags2az6.textColor = Color.green();
-if (finanzdaten[5][2] < finanzdaten[5][7]) textbetragtags2az6.textColor = Color.red();
+let textentwtags2az6 = headerspalte2astack.addText(entwtag);
+textentwtags2az6.font = textschriftartfett;
+if (finanzdaten[5][2] > finanzdaten[5][7]) textentwtags2az6.textColor = Color.green();
+if (finanzdaten[5][2] < finanzdaten[5][7]) textentwtags2az6.textColor = Color.red();
+if (debuglevel > 0) console.log("Kurs Tagesbeginn: " + finanzdaten[5][7]);
+if (debuglevel > 0) console.log("Kursveränderung absolut: " + (finanzdaten[5][2] - finanzdaten[5][7]));
+if (debuglevel > 0) console.log("Kursveränderung relativ: " + (((finanzdaten[5][2] - finanzdaten[5][7]) * 100) / finanzdaten[5][7]));
 
-if (finanzdaten[6][2] - finanzdaten[6][7] > 0) {
-    betragtag = " (+" + (finanzdaten[6][2]-finanzdaten[6][7]).toFixed(2).toString().replace(".",",") + " €)";
+if (finanzdaten[6][2] - finanzdaten[6][7] == 0) {
+    entwtag = " ";
+} else if (finanzdaten[6][2] - finanzdaten[6][7] > 0) {
+    entwtag = " (+" + (((finanzdaten[6][2]-finanzdaten[4][7])/finanzdaten[6][7]) * 100).toFixed(2).toString().replace(".",",") + " %)";
 } else {
-    betragtag = " (" + (finanzdaten[6][2]-finanzdaten[6][7]).toFixed(2).toString().replace(".",",") + " €)";
+    entwtag = " (" + (((finanzdaten[6][2]-finanzdaten[4][7])/finanzdaten[6][7]) * 100).toFixed(2).toString().replace(".",",") + " %)";
 }
-let textbetragtags2az7 = headerspalte2astack.addText(betragtag);
-textbetragtags2az7.font = textschriftartfett;
-if (finanzdaten[6][2] > finanzdaten[6][7]) textbetragtags2az7.textColor = Color.green();
-if (finanzdaten[6][2] < finanzdaten[6][7]) textbetragtags2az7.textColor = Color.red();
+let textentwtags2az7 = headerspalte2astack.addText(entwtag);
+textentwtags2az7.font = textschriftartfett;
+if (finanzdaten[6][2] > finanzdaten[6][7]) textentwtags2az7.textColor = Color.green();
+if (finanzdaten[6][2] < finanzdaten[6][7]) textentwtags2az7.textColor = Color.red();
+if (debuglevel > 0) console.log("Kurs Tagesbeginn: " + finanzdaten[6][7]);
+if (debuglevel > 0) console.log("Kursveränderung absolut: " + (finanzdaten[6][2] - finanzdaten[6][7]));
+if (debuglevel > 0) console.log("Kursveränderung relativ: " + (((finanzdaten[6][2] - finanzdaten[6][7]) * 100) / finanzdaten[6][7]));
 
+if (debuglevel > 0) console.log(" ");
 headerspaltenstack.addSpacer();
 
 // Ausgabe Gesamtwerte (Spalte 3)
