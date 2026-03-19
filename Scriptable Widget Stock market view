@@ -3,14 +3,14 @@
 
 
 // Version
-const version = "1.09";
-// 17.03.2026
+const version = "1.10";
+// 19.03.2026
 
 
 // ToDo / Bugs / Ideen: <keine>
 
 // Debuglevel
-let debuglevel = 1;
+let debuglevel = 0;
 // 0 - keine Analyse
 // 1 - Analyse Berechnungswerte
 // 2 - Analyse Berechnungswerte und Einfärben Stacks
@@ -180,7 +180,8 @@ let entwicklungjahrbetrag = sum - summejahresanfang;
 let textschriftartfett = Font.boldSystemFont(9);
 let kleineueberschrift = Font.italicSystemFont(9);
 let farbeueberschrift = Color.gray();
-let grosstextschriftart = Font.boldRoundedSystemFont(25);
+let grosstextschriftart = Font.boldRoundedSystemFont(24);
+let gesamtsummeschriftart = Font.boldRoundedSystemFont(34);
 let sehrkleinschriftart = Font.regularSystemFont(7);
 
 
@@ -454,7 +455,7 @@ ueberschriftgesamtsumme.textColor = farbeueberschrift;
 let zentriert1stack = hauptzeilenstack.addStack();
 zentriert1stack.addSpacer();
 let gesamtsummetext = zentriert1stack.addText(tausenderpunkt(runden(sum,2).toFixed(2).replace(".",",")) + " €");
-gesamtsummetext.font=grosstextschriftart;
+gesamtsummetext.font=gesamtsummeschriftart;
 zentriert1stack.addSpacer();
 
 hauptzeilenstack.addSpacer();
