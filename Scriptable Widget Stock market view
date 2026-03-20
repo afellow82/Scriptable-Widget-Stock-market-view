@@ -3,7 +3,7 @@
 
 
 // Version
-const version = "2.01";
+const version = "2.02";
 // 20.03.2026
 
 
@@ -188,7 +188,7 @@ let entwicklungjahrbetrag = sum - summejahresanfang;
 // Schriftarten
 let textschriftartfett = Font.boldSystemFont(9);
 let textschriftart = Font.regularSystemFont(9);
-let kleineueberschrift = Font.italicSystemFont(9);
+let kleineueberschrift = Font.italicSystemFont(10);
 let farbeueberschrift = Color.gray();
 let grosstextschriftart = Font.boldRoundedSystemFont(24);
 let gesamtsummeschriftart = Font.boldRoundedSystemFont(32);
@@ -631,7 +631,7 @@ let alterdaten = Math.floor((heute.getTime() - datumanteile.getTime())/(1000*60*
 if (alterdaten > 35){
     textzeilestand.textColor=Color.red();
 } else {
-    textzeilestand.textColor=Color.lightGray();;
+    textzeilestand.textColor=farbefooter;;
 }
 
 let versionrechtsstack = footers4stack.addStack();
@@ -640,7 +640,7 @@ versionrechtsstack.addSpacer();
 versiontext = '[V'+ version + ', '+stundenaktuelltext+':'+minutenaktuelltext +']';
 let textzeileversion = versionrechtsstack.addText(versiontext);
 textzeileversion.font=sehrkleinschriftart;
-textzeileversion.textColor=Color.lightGray();
+textzeileversion.textColor=farbefooter;
 
 
 // Widget starten
