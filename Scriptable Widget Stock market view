@@ -3,21 +3,22 @@
 
 
 // Version
-const version = "1.11";
-// 19.03.2026
+const version = "2.00";
+// 20.03.2026
 
 
-// ToDo / Bugs / Ideen: <keine>
+// ToDo / Bugs / Ideen:
+// - Neugestaltung Footer: Datum kürzen (20.03.2026 > 20.03.), Datenstände Kurse in 3 Spalten, dadurch eine Zeile weniger im Footer und weniger weißer Raum
 
 // Debuglevel
-let debuglevel = 0;
+let debuglevel = 2;
 // 0 - keine Analyse
 // 1 - Analyse Berechnungswerte
 // 2 - Analyse Berechnungswerte und Einfärben Stacks
 
 
 // Händische Pflege Anteile direkt im Array (#3)
-const datumanteile = new Date("03/02/2026");
+const datumanteile = new Date("03/20/2026");
 
 // Anzahl und Array finanzdaten initialisieren
 // Bestandteile array:
@@ -33,19 +34,20 @@ const datumanteile = new Date("03/02/2026");
 // #9 - Anzahl Aktien Jahresanfang (händisch eingetragen, Stand: 01.01.2025)
 // #10 - Kurs Jahresanfang (händisch eingetragen, Stand: 01.01.2025)
 // #11 - Historischer Gesamtwert (initialisiert, wird überschrieben)
+// #12 - Anteil an Gesamtsumme (initialisiert, wird überschrieben)
 const anzahl = 7;
 const finanzdaten = [];
-finanzdaten[0] = ["ETF Core MSCI World","IE00B4L5Y983",0.00,500.084082,0.00,"","",0.00,"_000000000",500.084082,111.74,0.00];
-finanzdaten[1] = ["ETF MSCI World SRI","IE00BYX2JD69",0.00,3990.067096,0.00,"","",0.00,"_000000000",3792.520514,12.19,0.00];
-finanzdaten[2] = ["Aktie Allianz","DE0008404005",0.00,91.862,0.00,"","",0.00,"_000000000",91.862,390.50,0.00];
-finanzdaten[3] = ["ETF AI Infrastructure","IE000X59ZHE2",0.00,476.198976,0.00,"","",0.00,"_000000000",476.198976,6.19,0.00];
-finanzdaten[4] = ["Fonds Allianz US Equity","LU0256843979",0.00,5.048,0.00,"","",0.00,"_000000000",4.873,457.889,0.00];
-finanzdaten[5] = ["Aktie Panasonic","JP3866800000",0.00,26,0.00,"","",0.00,"_000000000",26,10.27,0.00];
-finanzdaten[6] = ["Aktie First Graphene","AU000000FGR3",0.00,250,0.00,"","",0.00,"_000000000",250,0.05,0.00];
+finanzdaten[0] = ["ETF Core MSCI World","IE00B4L5Y983",0.00,500.084082,0.00,"","",0.00,"_000000000",500.084082,111.74,0.00,0];
+finanzdaten[1] = ["ETF MSCI World SRI","IE00BYX2JD69",0.00,4190.400985,0.00,"","",0.00,"_000000000",3792.520514,12.19,0.00,0];
+finanzdaten[2] = ["Aktie Allianz","DE0008404005",0.00,91.862,0.00,"","",0.00,"_000000000",91.862,390.50,0.00,0];
+finanzdaten[3] = ["ETF AI Infrastructure","IE000X59ZHE2",0.00,476.198976,0.00,"","",0.00,"_000000000",476.198976,6.19,0.00,0];
+finanzdaten[4] = ["Fonds Allianz US Equity","LU0256843979",0.00,5.048,0.00,"","",0.00,"_000000000",4.873,457.889,0.00,0];
+finanzdaten[5] = ["Aktie Panasonic","JP3866800000",0.00,26,0.00,"","",0.00,"_000000000",26,10.27,0.00,0];
+finanzdaten[6] = ["Aktie First Graphene","AU000000FGR3",0.00,250,0.00,"","",0.00,"_000000000",250,0.05,0.00,0];
 
 // Widget initialisieren
 let widget = new ListWidget();
-widget.setPadding(10, 10 , 10, 10);
+widget.setPadding(15, 8 , 15, 8);
 let heute = new Date();
 
 
@@ -138,6 +140,14 @@ if (debuglevel > 0) console.log("Aktuelle Gesamtsumme: " + sum);
 if (debuglevel > 0) console.log(" ");
 
 
+// Berechnung Anteil an Gesamtsumme
+for (let i=0; i<anzahl; i++ ) {
+    finanzdaten[i][12] = Math.round((finanzdaten[i][4] / sum) * 100);
+    if (debuglevel > 0) console.log(finanzdaten[i][12]);
+}
+if (debuglevel > 0) console.log(" ");
+
+
 // Berechnung Kursentwicklung Tag
 let summetagesanfang = 0;
 for (let i=0; i<anzahl; i++ ) {
@@ -178,6 +188,7 @@ let entwicklungjahrbetrag = sum - summejahresanfang;
 
 // Schriftarten
 let textschriftartfett = Font.boldSystemFont(9);
+let textschriftart = Font.regularSystemFont(9);
 let kleineueberschrift = Font.italicSystemFont(9);
 let farbeueberschrift = Color.gray();
 let grosstextschriftart = Font.boldRoundedSystemFont(23);
@@ -204,7 +215,7 @@ for (let i=0; i<anzahl; i++ ) {
     text.font=textschriftartfett;
 }
 
-headerspaltenstack.addSpacer();
+//headerspaltenstack.addSpacer();
 let headerspalte2stack = headerspaltenstack.addStack();
 headerspalte2stack.layoutVertically();
 headerspalte2stack.size = new Size(60,0);
@@ -217,8 +228,6 @@ headers2z1stack.addSpacer();
 let kursheaders2z1 = finanzdaten[0][2].toFixed(3).toString().replace(".",",") + " €";
 let textheaders2z1 = headers2z1stack.addText(kursheaders2z1);
 textheaders2z1.font=textschriftartfett;
-if (finanzdaten[0][2] > finanzdaten[0][7]) textheaders2z1.textColor = Color.green();
-if (finanzdaten[0][2] < finanzdaten[0][7]) textheaders2z1.textColor = Color.red();
 
 let headers2z2stack = headerspalte2stack.addStack();
 headers2z2stack.layoutHorizontally();
@@ -226,8 +235,6 @@ headers2z2stack.addSpacer();
 let kursheaders2z2 = finanzdaten[1][2].toFixed(3).toString().replace(".",",") + " €";
 let textheaders2z2 = headers2z2stack.addText(kursheaders2z2);
 textheaders2z2.font=textschriftartfett;
-if (finanzdaten[1][2] > finanzdaten[1][7]) textheaders2z2.textColor = Color.green();
-if (finanzdaten[1][2] < finanzdaten[1][7]) textheaders2z2.textColor = Color.red();
 
 let headers2z3stack = headerspalte2stack.addStack();
 headers2z3stack.layoutHorizontally();
@@ -235,8 +242,6 @@ headers2z3stack.addSpacer();
 let kursheaders2z3 = finanzdaten[2][2].toFixed(3).toString().replace(".",",") + " €";
 let textheaders2z3 = headers2z3stack.addText(kursheaders2z3);
 textheaders2z3.font=textschriftartfett;
-if (finanzdaten[2][2] > finanzdaten[2][7]) textheaders2z3.textColor = Color.green();
-if (finanzdaten[2][2] < finanzdaten[2][7]) textheaders2z3.textColor = Color.red();
 
 let headers2z4stack = headerspalte2stack.addStack();
 headers2z4stack.layoutHorizontally();
@@ -244,8 +249,6 @@ headers2z4stack.addSpacer();
 let kursheaders2z4 = finanzdaten[3][2].toFixed(3).toString().replace(".",",") + " €";
 let textheaders2z4 = headers2z4stack.addText(kursheaders2z4);
 textheaders2z4.font=textschriftartfett;
-if (finanzdaten[3][2] > finanzdaten[3][7]) textheaders2z4.textColor = Color.green();
-if (finanzdaten[3][2] < finanzdaten[3][7]) textheaders2z4.textColor = Color.red();
 
 let headers2z5stack = headerspalte2stack.addStack();
 headers2z5stack.layoutHorizontally();
@@ -253,8 +256,6 @@ headers2z5stack.addSpacer();
 let kursheaders2z5 = finanzdaten[4][2].toFixed(3).toString().replace(".",",") + " €";
 let textheaders2z5 = headers2z5stack.addText(kursheaders2z5);
 textheaders2z5.font=textschriftartfett;
-if (finanzdaten[4][2] > finanzdaten[4][7]) textheaders2z5.textColor = Color.green();
-if (finanzdaten[4][2] < finanzdaten[4][7]) textheaders2z5.textColor = Color.red();
 
 let headers2z6stack = headerspalte2stack.addStack();
 headers2z6stack.layoutHorizontally();
@@ -262,8 +263,6 @@ headers2z6stack.addSpacer();
 let kursheaders2z6 = finanzdaten[5][2].toFixed(3).toString().replace(".",",") + " €";
 let textheaders2z6 = headers2z6stack.addText(kursheaders2z6);
 textheaders2z6.font=textschriftartfett;
-if (finanzdaten[5][2] > finanzdaten[5][7]) textheaders2z6.textColor = Color.green();
-if (finanzdaten[5][2] < finanzdaten[5][7]) textheaders2z6.textColor = Color.red();
 
 let headers2z7stack = headerspalte2stack.addStack();
 headers2z7stack.layoutHorizontally();
@@ -271,8 +270,6 @@ headers2z7stack.addSpacer();
 let kursheaders2z7 = finanzdaten[6][2].toFixed(3).toString().replace(".",",") + " €";
 let textheaders2z7 = headers2z7stack.addText(kursheaders2z7);
 textheaders2z7.font=textschriftartfett;
-if (finanzdaten[6][2] > finanzdaten[6][7]) textheaders2z7.textColor = Color.green();
-if (finanzdaten[6][2] < finanzdaten[6][7]) textheaders2z7.textColor = Color.red();
 
 // Ausgabe Betrag Tagesentwicklung (Spalte 2a)
 let headerspalte2astack = headerspaltenstack.addStack();
@@ -284,12 +281,12 @@ let entwtag =0;
 if (finanzdaten[0][2] - finanzdaten[0][7] == 0) {
     entwtag = " ";
 } else if (finanzdaten[0][2] - finanzdaten[0][7] > 0) {
-    entwtag = " (+" + runden((((finanzdaten[0][2]-finanzdaten[0][7])/finanzdaten[0][7]) * 100),2).toFixed(2).replace(".",",") + " %)";
+    entwtag = " (+" + runden((((finanzdaten[0][2]-finanzdaten[0][7])/finanzdaten[0][7]) * 100),2).toFixed(2).replace(".",",") + "%)";
 } else {
-    entwtag = " (" + runden((((finanzdaten[0][2]-finanzdaten[0][7])/finanzdaten[0][7]) * 100),2).toFixed(2).replace(".",",") + " %)";
+    entwtag = " (" + runden((((finanzdaten[0][2]-finanzdaten[0][7])/finanzdaten[0][7]) * 100),2).toFixed(2).replace(".",",") + "%)";
 }
 let textentwtags2az1 = headerspalte2astack.addText(entwtag);
-textentwtags2az1.font = textschriftartfett;
+textentwtags2az1.font = textschriftart;
 if (finanzdaten[0][2] > finanzdaten[0][7]) textentwtags2az1.textColor = Color.green();
 if (finanzdaten[0][2] < finanzdaten[0][7]) textentwtags2az1.textColor = Color.red();
 if (debuglevel > 0) console.log("Kurs Tagesbeginn: " + finanzdaten[0][7]);
@@ -299,12 +296,12 @@ if (debuglevel > 0) console.log("Kursveränderung relativ: " + (((finanzdaten[0]
 if (finanzdaten[1][2] - finanzdaten[1][7] == 0) {
     entwtag = " ";
 } else if (finanzdaten[1][2] - finanzdaten[1][7] > 0) {
-    entwtag = " (+" + runden((((finanzdaten[1][2]-finanzdaten[1][7])/finanzdaten[1][7]) * 100),2).toFixed(2).replace(".",",") + " %)";
+    entwtag = " (+" + runden((((finanzdaten[1][2]-finanzdaten[1][7])/finanzdaten[1][7]) * 100),2).toFixed(2).replace(".",",") + "%)";
 } else {
-    entwtag = " (" + runden((((finanzdaten[1][2]-finanzdaten[1][7])/finanzdaten[1][7]) * 100),2).toFixed(2).replace(".",",") + " %)";
+    entwtag = " (" + runden((((finanzdaten[1][2]-finanzdaten[1][7])/finanzdaten[1][7]) * 100),2).toFixed(2).replace(".",",") + "%)";
 }
 let textentwtags2az2 = headerspalte2astack.addText(entwtag);
-textentwtags2az2.font = textschriftartfett;
+textentwtags2az2.font = textschriftart;
 if (finanzdaten[1][2] > finanzdaten[1][7]) textentwtags2az2.textColor = Color.green();
 if (finanzdaten[1][2] < finanzdaten[1][7]) textentwtags2az2.textColor = Color.red();
 if (debuglevel > 0) console.log("Kurs Tagesbeginn: " + finanzdaten[1][7]);
@@ -314,12 +311,12 @@ if (debuglevel > 0) console.log("Kursveränderung relativ: " + (((finanzdaten[1]
 if (finanzdaten[2][2] - finanzdaten[2][7] == 0) {
     entwtag = " ";
 } else if (finanzdaten[2][2] - finanzdaten[2][7] > 0) {
-    entwtag = " (+" + runden((((finanzdaten[2][2]-finanzdaten[2][7])/finanzdaten[2][7]) * 100),2).toFixed(2).replace(".",",") + " %)";
+    entwtag = " (+" + runden((((finanzdaten[2][2]-finanzdaten[2][7])/finanzdaten[2][7]) * 100),2).toFixed(2).replace(".",",") + "%)";
 } else {
-    entwtag = " (" + runden((((finanzdaten[2][2]-finanzdaten[2][7])/finanzdaten[2][7]) * 100),2).toFixed(2).replace(".",",") + " %)";
+    entwtag = " (" + runden((((finanzdaten[2][2]-finanzdaten[2][7])/finanzdaten[2][7]) * 100),2).toFixed(2).replace(".",",") + "%)";
 }
 let textentwtags2az3 = headerspalte2astack.addText(entwtag);
-textentwtags2az3.font = textschriftartfett;
+textentwtags2az3.font = textschriftart;
 if (finanzdaten[2][2] > finanzdaten[2][7]) textentwtags2az3.textColor = Color.green();
 if (finanzdaten[2][2] < finanzdaten[2][7]) textentwtags2az3.textColor = Color.red();
 if (debuglevel > 0) console.log("Kurs Tagesbeginn: " + finanzdaten[2][7]);
@@ -329,12 +326,12 @@ if (debuglevel > 0) console.log("Kursveränderung relativ: " + (((finanzdaten[2]
 if (finanzdaten[3][2] - finanzdaten[3][7] == 0) {
     entwtag = " ";
 } else if (finanzdaten[3][2] - finanzdaten[3][7] > 0) {
-    entwtag = " (+" + runden((((finanzdaten[3][2]-finanzdaten[3][7])/finanzdaten[3][7]) * 100),2).toFixed(2).replace(".",",") + " %)";
+    entwtag = " (+" + runden((((finanzdaten[3][2]-finanzdaten[3][7])/finanzdaten[3][7]) * 100),2).toFixed(2).replace(".",",") + "%)";
 } else {
-    entwtag = " (" + runden((((finanzdaten[3][2]-finanzdaten[3][7])/finanzdaten[3][7]) * 100),2).toFixed(2).replace(".",",") + " %)";
+    entwtag = " (" + runden((((finanzdaten[3][2]-finanzdaten[3][7])/finanzdaten[3][7]) * 100),2).toFixed(2).replace(".",",") + "%)";
 }
 let textentwtags2az4 = headerspalte2astack.addText(entwtag);
-textentwtags2az4.font = textschriftartfett;
+textentwtags2az4.font = textschriftart;
 if (finanzdaten[3][2] > finanzdaten[3][7]) textentwtags2az4.textColor = Color.green();
 if (finanzdaten[3][2] < finanzdaten[3][7]) textentwtags2az4.textColor = Color.red();
 if (debuglevel > 0) console.log("Kurs Tagesbeginn: " + finanzdaten[3][7]);
@@ -344,12 +341,12 @@ if (debuglevel > 0) console.log("Kursveränderung relativ: " + (((finanzdaten[3]
 if (finanzdaten[4][2] - finanzdaten[4][7] == 0) {
     entwtag = " ";
 } else if (finanzdaten[4][2] - finanzdaten[4][7] > 0) {
-    entwtag = " (+" + runden((((finanzdaten[4][2]-finanzdaten[4][7])/finanzdaten[4][7]) * 100),2).toFixed(2).replace(".",",") + " %)";
+    entwtag = " (+" + runden((((finanzdaten[4][2]-finanzdaten[4][7])/finanzdaten[4][7]) * 100),2).toFixed(2).replace(".",",") + "%)";
 } else {
-    entwtag = " (" + runden((((finanzdaten[4][2]-finanzdaten[4][7])/finanzdaten[4][7]) * 100),2).toFixed(2).replace(".",",") + " %)";
+    entwtag = " (" + runden((((finanzdaten[4][2]-finanzdaten[4][7])/finanzdaten[4][7]) * 100),2).toFixed(2).replace(".",",") + "%)";
 }
 let textentwtags2az5 = headerspalte2astack.addText(entwtag);
-textentwtags2az5.font = textschriftartfett;
+textentwtags2az5.font = textschriftart;
 if (finanzdaten[4][2] > finanzdaten[4][7]) textentwtags2az5.textColor = Color.green();
 if (finanzdaten[4][2] < finanzdaten[4][7]) textentwtags2az5.textColor = Color.red();
 if (debuglevel > 0) console.log("Kurs Tagesbeginn: " + finanzdaten[4][7]);
@@ -359,12 +356,12 @@ if (debuglevel > 0) console.log("Kursveränderung relativ: " + (((finanzdaten[4]
 if (finanzdaten[5][2] - finanzdaten[5][7] == 0) {
     entwtag = " ";
 } else if (finanzdaten[5][2] - finanzdaten[5][7] > 0) {
-    entwtag = " (+" + runden((((finanzdaten[5][2]-finanzdaten[5][7])/finanzdaten[5][7]) * 100),2).toFixed(2).replace(".",",") + " %)";
+    entwtag = " (+" + runden((((finanzdaten[5][2]-finanzdaten[5][7])/finanzdaten[5][7]) * 100),2).toFixed(2).replace(".",",") + "%)";
 } else {
-    entwtag = " (" + runden((((finanzdaten[5][2]-finanzdaten[5][7])/finanzdaten[5][7]) * 100),2).toFixed(2).replace(".",",") + " %)";
+    entwtag = " (" + runden((((finanzdaten[5][2]-finanzdaten[5][7])/finanzdaten[5][7]) * 100),2).toFixed(2).replace(".",",") + "%)";
 }
 let textentwtags2az6 = headerspalte2astack.addText(entwtag);
-textentwtags2az6.font = textschriftartfett;
+textentwtags2az6.font = textschriftart;
 if (finanzdaten[5][2] > finanzdaten[5][7]) textentwtags2az6.textColor = Color.green();
 if (finanzdaten[5][2] < finanzdaten[5][7]) textentwtags2az6.textColor = Color.red();
 if (debuglevel > 0) console.log("Kurs Tagesbeginn: " + finanzdaten[5][7]);
@@ -374,12 +371,12 @@ if (debuglevel > 0) console.log("Kursveränderung relativ: " + (((finanzdaten[5]
 if (finanzdaten[6][2] - finanzdaten[6][7] == 0) {
     entwtag = " ";
 } else if (finanzdaten[6][2] - finanzdaten[6][7] > 0) {
-    entwtag = " (+" + runden((((finanzdaten[6][2]-finanzdaten[6][7])/finanzdaten[6][7]) * 100),2).toFixed(2).replace(".",",") + " %)";
+    entwtag = " (+" + runden((((finanzdaten[6][2]-finanzdaten[6][7])/finanzdaten[6][7]) * 100),2).toFixed(2).replace(".",",") + "%)";
 } else {
-    entwtag = " (" + runden((((finanzdaten[6][2]-finanzdaten[6][7])/finanzdaten[6][7]) * 100),2).toFixed(2).replace(".",",") + " %)";
+    entwtag = " (" + runden((((finanzdaten[6][2]-finanzdaten[6][7])/finanzdaten[6][7]) * 100),2).toFixed(2).replace(".",",") + "%)";
 }
 let textentwtags2az7 = headerspalte2astack.addText(entwtag);
-textentwtags2az7.font = textschriftartfett;
+textentwtags2az7.font = textschriftart;
 if (finanzdaten[6][2] > finanzdaten[6][7]) textentwtags2az7.textColor = Color.green();
 if (finanzdaten[6][2] < finanzdaten[6][7]) textentwtags2az7.textColor = Color.red();
 if (debuglevel > 0) console.log("Kurs Tagesbeginn: " + finanzdaten[6][7]);
@@ -387,12 +384,10 @@ if (debuglevel > 0) console.log("Kursveränderung absolut: " + (finanzdaten[6][2
 if (debuglevel > 0) console.log("Kursveränderung relativ: " + (((finanzdaten[6][2] - finanzdaten[6][7]) * 100) / finanzdaten[6][7]));
 
 if (debuglevel > 0) console.log(" ");
-headerspaltenstack.addSpacer();
 
 // Ausgabe Gesamtwerte (Spalte 3)
 let headerspalte3stack = headerspaltenstack.addStack();
 headerspalte3stack.layoutVertically();
-headerspalte3stack.size = new Size(68,0);
 if (debuglevel > 1) headerspalte3stack.backgroundColor = new Color('763334');
 
 let headers3z1stack = headerspalte3stack.addStack();
@@ -443,6 +438,65 @@ headers3z7stack.addSpacer();
 let gesamtwertheaders3z7 = tausenderpunkt(runden(finanzdaten[6][4],2).toFixed(2).replace(".",",")) + " €";
 let textheaders3z7 = headers3z7stack.addText(gesamtwertheaders3z7);
 textheaders3z7.font=textschriftartfett;
+
+// Ausgabe Anteil an Gesamtsumme (Spalte 3a)
+let headerspalte3astack = headerspaltenstack.addStack();
+headerspalte3astack.layoutVertically();
+headerspalte3astack.size = new Size(33,0);
+if (debuglevel > 1) headerspalte3astack.backgroundColor = new Color('19A4B1');
+
+let headers3az1stack = headerspalte3astack.addStack();
+headers3az1stack.layoutHorizontally();
+headers3az1stack.addSpacer();
+let anteilheadertextz1 = headers3az1stack.addText(" " + finanzdaten[0][12].toString()+ "%");
+anteilheadertextz1.font=textschriftart;
+anteilheadertextz1.textColor = Color.lightGray();
+
+let headers3az2stack = headerspalte3astack.addStack();
+headers3az2stack.layoutHorizontally();
+headers3az2stack.addSpacer();
+let anteilheadertextz2 = headers3az2stack.addText(" " + finanzdaten[1][12].toString()+ "%");
+anteilheadertextz2.font=textschriftart;
+anteilheadertextz2.textColor = Color.lightGray();
+
+let headers3az3stack = headerspalte3astack.addStack();
+headers3az3stack.layoutHorizontally();
+headers3az3stack.addSpacer();
+let anteilheadertextz3 = headers3az3stack.addText(" " + finanzdaten[2][12].toString()+ "%");
+anteilheadertextz3.font=textschriftart;
+anteilheadertextz3.textColor = Color.lightGray();
+
+let headers3az4stack = headerspalte3astack.addStack();
+headers3az4stack.layoutHorizontally();
+headers3az4stack.addSpacer();
+let anteilheadertextz4 = headers3az4stack.addText(" " + finanzdaten[3][12].toString()+ "%");
+anteilheadertextz4.font=textschriftart;
+anteilheadertextz4.textColor = Color.lightGray();
+
+let headers3az5stack = headerspalte3astack.addStack();
+headers3az5stack.layoutHorizontally();
+headers3az5stack.addSpacer();
+let anteilheadertextz5 = headers3az5stack.addText(" " + finanzdaten[4][12].toString()+ "%");
+anteilheadertextz5.font=textschriftart;
+anteilheadertextz5.textColor = Color.lightGray();
+
+let headers3az6stack = headerspalte3astack.addStack();
+headers3az6stack.layoutHorizontally();
+headers3az6stack.addSpacer();
+let anteilheadertextz6 = headers3az6stack.addText(" " + finanzdaten[5][12].toString()+ "%");
+anteilheadertextz6.font=textschriftart;
+anteilheadertextz6.textColor = Color.lightGray();
+
+let headers3az7stack = headerspalte3astack.addStack();
+headers3az7stack.layoutHorizontally();
+headers3az7stack.addSpacer();
+let anteilheadertextz7 = headers3az7stack.addText(" " + finanzdaten[6][12].toString()+ "%");
+anteilheadertextz7.font=textschriftart;
+anteilheadertextz7.textColor = Color.lightGray();
+
+
+
+
 
 hauptzeilenstack.addSpacer();
 
@@ -510,8 +564,8 @@ hauptzeilenstack.addSpacer();
 
 
 // Ausgabe Footer
-hauptzeilenstack.addSpacer();
 let footerstack = hauptzeilenstack.addStack();
+if (debuglevel > 1) footerstack.backgroundColor = new Color('E4BA33');
 footerstack.layoutHorizontally();
 
 // Berechnung Teilung Liste
@@ -538,7 +592,7 @@ for (let i=0; i < teilung; i++ ) {
 // Ausgabe Liste Timestamps 2. Spalte
 let footermittestack = footerstack.addStack();
 footermittestack.layoutVertically();
-if (debuglevel > 1) footermittestack.backgroundColor = new Color('aaaaaa');
+if (debuglevel > 1) footermittestack.backgroundColor = new Color('F1C66E');
 
 let textfootermitte = footermittestack.addText(' ');
 textfootermitte.font=sehrkleinschriftart;
@@ -560,12 +614,17 @@ let minutenaktuelltext = minutenaktuell;
 if (minutenaktuell < 10) {minutenaktuelltext = '0'+ minutenaktuell;}
 
 footerstack.addSpacer();
+
 let footerrechtsstack = footerstack.addStack();
 footerrechtsstack.layoutVertically();
-footerrechtsstack.addSpacer();
 if (debuglevel > 1) footerrechtsstack.backgroundColor = new Color('abcd33');
 
-let textzeilestand = footerrechtsstack.addText('Stand Anteile: '+ nullendatum(datumanteile));
+footerrechtsstack.addSpacer();
+    
+let standstack = footerrechtsstack.addStack();
+standstack.layoutHorizontally();
+standstack.addSpacer();
+let textzeilestand = standstack.addText('Stand Anteile: '+ nullendatum(datumanteile));
 textzeilestand.font=sehrkleinschriftart;
 //roter Text wenn letztes Update vor mehr als 35 Tagen
 let alterdaten = Math.floor((heute.getTime() - datumanteile.getTime())/(1000*60*60*24));
@@ -575,12 +634,13 @@ if (alterdaten > 35){
     textzeilestand.textColor=Color.lightGray();;
 }
 
-
+let versionrechtsstack = footerrechtsstack.addStack();
+versionrechtsstack.layoutHorizontally();
+versionrechtsstack.addSpacer();
 versiontext = '[V'+ version + ', '+stundenaktuelltext+':'+minutenaktuelltext +']';
-let textzeileversion = footerrechtsstack.addText(versiontext);
+let textzeileversion = versionrechtsstack.addText(versiontext);
 textzeileversion.font=sehrkleinschriftart;
 textzeileversion.textColor=Color.lightGray();
-footerrechtsstack.addSpacer();
 
 // Widget starten
 widget.presentLarge();
