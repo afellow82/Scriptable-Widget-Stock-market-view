@@ -3,15 +3,14 @@
 
 
 // Version
-const version = "2.00";
+const version = "2.01";
 // 20.03.2026
 
 
-// ToDo / Bugs / Ideen:
-// - Neugestaltung Footer: Datum kürzen (20.03.2026 > 20.03.), Datenstände Kurse in 3 Spalten, dadurch eine Zeile weniger im Footer und weniger weißer Raum
+// ToDo / Bugs / Ideen: <keine>
 
 // Debuglevel
-let debuglevel = 2;
+let debuglevel = 0;
 // 0 - keine Analyse
 // 1 - Analyse Berechnungswerte
 // 2 - Analyse Berechnungswerte und Einfärben Stacks
@@ -191,9 +190,10 @@ let textschriftartfett = Font.boldSystemFont(9);
 let textschriftart = Font.regularSystemFont(9);
 let kleineueberschrift = Font.italicSystemFont(9);
 let farbeueberschrift = Color.gray();
-let grosstextschriftart = Font.boldRoundedSystemFont(23);
+let grosstextschriftart = Font.boldRoundedSystemFont(24);
 let gesamtsummeschriftart = Font.boldRoundedSystemFont(32);
 let sehrkleinschriftart = Font.regularSystemFont(7);
+let farbefooter = Color.lightGray();
 
 
 // Ausgabe
@@ -494,12 +494,7 @@ let anteilheadertextz7 = headers3az7stack.addText(" " + finanzdaten[6][12].toStr
 anteilheadertextz7.font=textschriftart;
 anteilheadertextz7.textColor = Color.lightGray();
 
-
-
-
-
 hauptzeilenstack.addSpacer();
-
 
 // Ausgabe Gesamtsumme
 let ueberschriftgesamtsumme = hauptzeilenstack.addText('Gesamtsumme');
@@ -562,50 +557,63 @@ zentriert4stack.addSpacer();
 
 hauptzeilenstack.addSpacer();
 
-
 // Ausgabe Footer
+let footerueberschrift = hauptzeilenstack.addText('Datenstand Kurse:');
+footerueberschrift.font=sehrkleinschriftart;
+footerueberschrift.textColor=farbefooter;
+
 let footerstack = hauptzeilenstack.addStack();
 if (debuglevel > 1) footerstack.backgroundColor = new Color('E4BA33');
 footerstack.layoutHorizontally();
 
-// Berechnung Teilung Liste
-let teilung = Math.ceil(anzahl / 2);
-if (debuglevel > 0) console.log("Teilung Liste nach " + teilung + " Einträgen");
-if (debuglevel > 0) console.log(" ");
+// Berechnung Teilungen Liste für drei Spalten
+let restliste = anzahl;
+let teilung1 = Math.ceil(anzahl / 3);
+restliste = restliste - teilung1;
+if (restliste < teilung1) {
+    teilung2 = restliste;
+} else {
+  teilung2 = teilung1 
+}
+restliste = restliste - teilung2;
 
-// Ausgabe Liste Timestamps 1. Spalte
-let footerlinksstack = footerstack.addStack();
-footerlinksstack.layoutVertically();
-if (debuglevel > 1) footerlinksstack.backgroundColor = new Color('8712ff');
-
-let textfooterlinks = footerlinksstack.addText('Datenstand Kurse:');
-textfooterlinks.font=sehrkleinschriftart;
-textfooterlinks.textColor=Color.lightGray();
-
-for (let i=0; i < teilung; i++ ) {
-    let timestamp = " " + (i+1) + ": " + uhrzeit(finanzdaten[i][6]);
-    let text = footerlinksstack.addText(timestamp);
-    text.font=sehrkleinschriftart;
-    text.textColor=Color.lightGray();
+footers1stack = footerstack.addStack();
+footers1stack.layoutVertically();
+  
+for (let i=0; i<teilung1; i++ ) {
+    let uhrzeitlang = uhrzeit(finanzdaten[i][6]);
+    let uhrzeitkurz = uhrzeitlang.substring(0,6) + uhrzeitlang.substring(10,uhrzeitlang.lenght);
+    footers1text = footers1stack.addText("  " + (i+1) + ": " + uhrzeitkurz);
+    footers1text.font=sehrkleinschriftart;
+    footers1text.textColor=farbefooter;
 }
 
-// Ausgabe Liste Timestamps 2. Spalte
-let footermittestack = footerstack.addStack();
-footermittestack.layoutVertically();
-if (debuglevel > 1) footermittestack.backgroundColor = new Color('F1C66E');
+footers2stack = footerstack.addStack();
+footers2stack.layoutVertically();
 
-let textfootermitte = footermittestack.addText(' ');
-textfootermitte.font=sehrkleinschriftart;
-textfootermitte.textColor=Color.lightGray();
+for (let i=0; i<teilung2; i++ ) {
+    let uhrzeitlang = uhrzeit(finanzdaten[i+teilung1][6]);
+    let uhrzeitkurz = uhrzeitlang.substring(0,6) + uhrzeitlang.substring(10,uhrzeitlang.lenght);
+    footers2text = footers2stack.addText("  " + (i+1+teilung1) + ": " + uhrzeitkurz);
+    footers2text.font=sehrkleinschriftart;
+    footers2text.textColor=farbefooter;
+}
 
-for (let i=teilung; i < anzahl; i++ ) {
-    let timestamp = "  " + (i+1) + ": " + uhrzeit(finanzdaten[i][6]);
-    let text = footermittestack.addText(timestamp);
-    text.font=sehrkleinschriftart;
-    text.textColor=Color.lightGray();
+footers3stack = footerstack.addStack();
+footers3stack.layoutVertically();
+
+for (let i=0; i<restliste; i++ ) {
+    let uhrzeitlang = uhrzeit(finanzdaten[i+teilung1+teilung2][6]);
+    let uhrzeitkurz = uhrzeitlang.substring(0,6) + uhrzeitlang.substring(10,uhrzeitlang.lenght);
+    footers3text = footers3stack.addText("  " + (i+1+teilung1+teilung2) + ": " + uhrzeitkurz);
+    footers3text.font=sehrkleinschriftart;
+    footers3text.textColor=farbefooter;
 }
 
 // Ausgabe Standdatum Anteile, Version und Uhrzeit
+footers4stack = footerstack.addStack();
+footers4stack.layoutVertically();
+
 let stundenaktuell = heute.getHours();
 let stundenaktuelltext = stundenaktuell;
 if (stundenaktuell < 10) {stundenaktuelltext = '0'+ stundenaktuell;}
@@ -613,15 +621,7 @@ let minutenaktuell = heute.getMinutes();
 let minutenaktuelltext = minutenaktuell;
 if (minutenaktuell < 10) {minutenaktuelltext = '0'+ minutenaktuell;}
 
-footerstack.addSpacer();
-
-let footerrechtsstack = footerstack.addStack();
-footerrechtsstack.layoutVertically();
-if (debuglevel > 1) footerrechtsstack.backgroundColor = new Color('abcd33');
-
-footerrechtsstack.addSpacer();
-    
-let standstack = footerrechtsstack.addStack();
+let standstack = footers4stack.addStack();
 standstack.layoutHorizontally();
 standstack.addSpacer();
 let textzeilestand = standstack.addText('Stand Anteile: '+ nullendatum(datumanteile));
@@ -634,13 +634,14 @@ if (alterdaten > 35){
     textzeilestand.textColor=Color.lightGray();;
 }
 
-let versionrechtsstack = footerrechtsstack.addStack();
+let versionrechtsstack = footers4stack.addStack();
 versionrechtsstack.layoutHorizontally();
 versionrechtsstack.addSpacer();
 versiontext = '[V'+ version + ', '+stundenaktuelltext+':'+minutenaktuelltext +']';
 let textzeileversion = versionrechtsstack.addText(versiontext);
 textzeileversion.font=sehrkleinschriftart;
 textzeileversion.textColor=Color.lightGray();
+
 
 // Widget starten
 widget.presentLarge();
