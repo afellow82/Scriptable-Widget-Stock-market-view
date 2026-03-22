@@ -3,8 +3,8 @@
 
 
 // Version
-const version = "2.02";
-// 20.03.2026
+const version = "2.03";
+// 22.03.2026
 
 
 // ToDo / Bugs / Ideen: <keine>
@@ -583,7 +583,7 @@ footers1stack.layoutVertically();
 for (let i=0; i<teilung1; i++ ) {
     let uhrzeitlang = uhrzeit(finanzdaten[i][6]);
     let uhrzeitkurz = uhrzeitlang.substring(0,6) + uhrzeitlang.substring(10,uhrzeitlang.lenght);
-    footers1text = footers1stack.addText("  " + (i+1) + ": " + uhrzeitkurz);
+    footers1text = footers1stack.addText((i+1) + ": " + uhrzeitkurz);
     footers1text.font=sehrkleinschriftart;
     footers1text.textColor=farbefooter;
 }
@@ -594,7 +594,7 @@ footers2stack.layoutVertically();
 for (let i=0; i<teilung2; i++ ) {
     let uhrzeitlang = uhrzeit(finanzdaten[i+teilung1][6]);
     let uhrzeitkurz = uhrzeitlang.substring(0,6) + uhrzeitlang.substring(10,uhrzeitlang.lenght);
-    footers2text = footers2stack.addText("  " + (i+1+teilung1) + ": " + uhrzeitkurz);
+    footers2text = footers2stack.addText("    " + (i+1+teilung1) + ": " + uhrzeitkurz);
     footers2text.font=sehrkleinschriftart;
     footers2text.textColor=farbefooter;
 }
@@ -605,7 +605,7 @@ footers3stack.layoutVertically();
 for (let i=0; i<restliste; i++ ) {
     let uhrzeitlang = uhrzeit(finanzdaten[i+teilung1+teilung2][6]);
     let uhrzeitkurz = uhrzeitlang.substring(0,6) + uhrzeitlang.substring(10,uhrzeitlang.lenght);
-    footers3text = footers3stack.addText("  " + (i+1+teilung1+teilung2) + ": " + uhrzeitkurz);
+    footers3text = footers3stack.addText("    " + (i+1+teilung1+teilung2) + ": " + uhrzeitkurz);
     footers3text.font=sehrkleinschriftart;
     footers3text.textColor=farbefooter;
 }
